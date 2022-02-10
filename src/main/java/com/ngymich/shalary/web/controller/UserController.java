@@ -38,6 +38,7 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDto) {
         log.info("Adding user " + userDto.getUsername());
+        userDto.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
         return ResponseEntity.ok(this.userService.addUser(userDto));
     }
 

@@ -23,11 +23,13 @@ public class SalaryService {
     public List<PersistableSalaryHistory> getSalaryHistories() {
         return this.salaryHistoryRepository.findAll();
     }
+
     public List<PersistableSalaryInfo> getSalaryInfos() {
         return this.salaryInfosRepository.findAll();
     }
 
 
-
-
+    public PersistableSalaryInfo addSalaryInfo(PersistableSalaryInfo salaryInfo) {
+        return this.salaryInfosRepository.save(salaryInfo);
+    }
 }

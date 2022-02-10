@@ -1,7 +1,7 @@
 package com.ngymich.shalary.infrastructure.persistence.salary;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +19,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersistableSalaryHistory {
+public class PersistableSalaryHistory implements Serializable {
+    private static final long serialVersionUID = 101L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(mappedBy = "salaryHistory")
+    @JsonBackReference
+    @OneToOne(mappedBy = "salaryHistory", fetch = FetchType.EAGER)
     private PersistableUser user;
 
 

@@ -40,6 +40,10 @@ public class UserService {
                 .build();
 
 //        this.salaryInfosJpaRepository.saveAll(userDto.getSalaryHistory().getSalariesList());
+        user.getSalaryHistory().setUser(user);
+        user.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
+//        this.salaryHistoryRepository.save(user.getSalaryHistory());
+//        this.salaryInfosJpaRepository.save(userDto.getSalaryHistory().getSalaryInfos());
         this.userRepository.save(user);
         return user;
     }

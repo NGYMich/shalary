@@ -1,6 +1,8 @@
 package com.ngymich.shalary.infrastructure.persistence.salary;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +11,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity
@@ -16,17 +19,18 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersistableSalaryInfo {
+public class PersistableSalaryInfo implements Serializable {
+    private static final long serialVersionUID = 100L;
 
     enum JobLevel { Junior, Intermediate, Senior }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private long salaryInfoId;
 
-    @JsonIgnore
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @NotFound(action = NotFoundAction.IGNORE)
-    @JoinColumn(name = "salary_history_id", referencedColumnName = "id", insertable = false, updatable = false)
     private PersistableSalaryHistory salaryHistory;
 
     @Enumerated(EnumType.STRING)

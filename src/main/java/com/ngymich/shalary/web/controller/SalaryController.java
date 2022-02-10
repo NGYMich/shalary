@@ -1,12 +1,12 @@
 package com.ngymich.shalary.web.controller;
 
+import com.ngymich.shalary.application.User.UserDTO;
 import com.ngymich.shalary.domain.salary.SalaryService;
+import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -31,4 +31,11 @@ public class SalaryController {
         log.info("Retrieving salaries informations");
         return ResponseEntity.ok(this.salaryService.getSalaryInfos());
     }
+
+    @PostMapping("/salaryInfo")
+    public ResponseEntity<?> addUser(@RequestBody PersistableSalaryInfo salaryInfo) {
+        log.info("Adding salary");
+        return ResponseEntity.ok(this.salaryService.addSalaryInfo(salaryInfo));
+    }
+
 }
