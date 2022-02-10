@@ -1,8 +1,8 @@
 /*h2*/
 
-DROP TABLE IF EXISTS USERS;
+DROP TABLE IF EXISTS USER;
 
-CREATE TABLE IF NOT EXISTS USERS (
+CREATE TABLE IF NOT EXISTS USER (
     id SERIAL PRIMARY KEY,
     username VARCHAR(150),
     password VARCHAR(100),
@@ -14,19 +14,19 @@ CREATE TABLE IF NOT EXISTS USERS (
     gender VARCHAR(20),
 );
 
-DROP TABLE IF EXISTS SALARY_HISTORIES;
+DROP TABLE IF EXISTS SALARY_HISTORY;
 
-CREATE TABLE IF NOT EXISTS SALARY_HISTORIES (
+CREATE TABLE IF NOT EXISTS SALARY_HISTORY (
     id SERIAL PRIMARY KEY,
     user_id INT,
     salary_currency VARCHAR(10),
     total_years_of_experience FLOAT,
-    FOREIGN KEY (user_id) references USERS(id)
+    FOREIGN KEY (user_id) references USER(id)
 );
 
-DROP TABLE IF EXISTS SALARY_INFOS;
+DROP TABLE IF EXISTS SALARY_INFO;
 
-CREATE TABLE IF NOT EXISTS SALARY_INFOS (
+CREATE TABLE IF NOT EXISTS SALARY_INFO (
     salary_info_id SERIAL PRIMARY KEY,
     salary_history_id INT,
     job_level VARCHAR(50),
@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS SALARY_INFOS (
     base_salary FLOAT,
     stock_salary FLOAT,
     bonus_salary FLOAT,
-    FOREIGN KEY (salary_history_id) references SALARY_HISTORIES(id)
+    total_salary FLOAT,
+    net_total_salary FLOAT,
+    FOREIGN KEY (salary_history_id) references SALARY_HISTORY(id)
 );
 

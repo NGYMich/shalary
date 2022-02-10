@@ -7,9 +7,9 @@ import lombok.*;
 import javax.persistence.*;
 
 @Data
-@Builder
 @Entity
-@Table(name = "users")
+@Table(name = "user")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersistableUser {
@@ -17,10 +17,12 @@ public class PersistableUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableSalaryHistory salaryHistory;
 
     @Column(name = "username")

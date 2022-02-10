@@ -1,7 +1,7 @@
 package com.ngymich.shalary.domain.salary;
 
-import com.ngymich.shalary.infrastructure.persistence.salary.ISalaryHistoryRepository;
-import com.ngymich.shalary.infrastructure.persistence.salary.ISalaryInfosRepository;
+import com.ngymich.shalary.infrastructure.persistence.salary.SalaryHistoryJpaRepository;
+import com.ngymich.shalary.infrastructure.persistence.salary.SalaryInfosJpaRepository;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import org.springframework.stereotype.Service;
@@ -11,10 +11,10 @@ import java.util.List;
 @Service
 public class SalaryService {
 
-    private final ISalaryHistoryRepository salaryHistoryRepository;
-    private final ISalaryInfosRepository salaryInfosRepository;
+    private final SalaryHistoryJpaRepository salaryHistoryRepository;
+    private final SalaryInfosJpaRepository salaryInfosRepository;
 
-    public SalaryService(ISalaryHistoryRepository salaryHistoryRepository, ISalaryInfosRepository salaryInfosRepository) {
+    public SalaryService(SalaryHistoryJpaRepository salaryHistoryRepository, SalaryInfosJpaRepository salaryInfosRepository) {
         this.salaryHistoryRepository = salaryHistoryRepository;
         this.salaryInfosRepository = salaryInfosRepository;
     }
