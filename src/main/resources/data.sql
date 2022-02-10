@@ -17,4 +17,4 @@ VALUES (1, 'Saupoudrer de 2 cuillères de farine. Bien remuer.'),
 */
 
 INSERT INTO SALARY_INFOS (job_level, job_name, base_salary)
-VALUES ('JUNIOR', 'Software Engineer', 40000.0);
+VALUES ('Junior', 'Software Engineer', 40000.0);

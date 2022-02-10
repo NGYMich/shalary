@@ -1,10 +1,10 @@
-package com.ngymich.shalary.domain.salary;
+package com.ngymich.shalary.infrastructure.persistence.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
-public interface ISalaryHistoryRepository extends JpaRepository<SalaryHistory, Long> {
+public interface IUserRepository extends JpaRepository<PersistableUser, Long> {
 
 
 }

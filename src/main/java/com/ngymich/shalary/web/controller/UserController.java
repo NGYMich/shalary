@@ -1,6 +1,7 @@
 package com.ngymich.shalary.web.controller;
 
-import com.ngymich.shalary.domain.user.User;
+import com.ngymich.shalary.application.User.UserDTO;
+import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import com.ngymich.shalary.domain.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,10 @@ public class UserController {
 
 
     @PostMapping("/user")
-    public ResponseEntity<?> addUser(@RequestBody User user) {
+    public ResponseEntity<?> addUser(@RequestBody UserDTO userDto) {
         log.info("Retrieving users");
-
-
-        return null;
+        return ResponseEntity.ok(this.userService.addUser(userDto));
     }
+
+
 }

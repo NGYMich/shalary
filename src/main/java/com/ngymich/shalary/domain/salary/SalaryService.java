@@ -1,5 +1,9 @@
 package com.ngymich.shalary.domain.salary;
 
+import com.ngymich.shalary.infrastructure.persistence.salary.ISalaryHistoryRepository;
+import com.ngymich.shalary.infrastructure.persistence.salary.ISalaryInfosRepository;
+import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
+import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +20,10 @@ public class SalaryService {
     }
 
 
-    public List<SalaryHistory> getSalaryHistories() {
+    public List<PersistableSalaryHistory> getSalaryHistories() {
         return this.salaryHistoryRepository.findAll();
     }
-    public List<SalaryInfo> getSalaryInfos() {
+    public List<PersistableSalaryInfo> getSalaryInfos() {
         return this.salaryInfosRepository.findAll();
     }
 

@@ -1,9 +1,7 @@
-package com.ngymich.shalary.domain.salary;
+package com.ngymich.shalary.infrastructure.persistence.salary;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ngymich.shalary.domain.company.Company;
 import lombok.Data;
-import lombok.NonNull;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -12,7 +10,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "salary_infos")
-public class SalaryInfo {
+public class PersistableSalaryInfo {
 
     enum JobLevel { Junior, Intermediate, Senior }
     @Id
@@ -23,7 +21,7 @@ public class SalaryInfo {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "salaryHistory_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private SalaryHistory salaryHistory;
+    private PersistableSalaryHistory salaryHistory;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "job_level") private JobLevel jobLevel;

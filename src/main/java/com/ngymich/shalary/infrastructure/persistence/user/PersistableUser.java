@@ -1,29 +1,27 @@
-package com.ngymich.shalary.domain.user;
+package com.ngymich.shalary.infrastructure.persistence.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.ngymich.shalary.domain.salary.SalaryHistory;
-import lombok.Data;
-import lombok.NonNull;
+import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Data
+@Builder
 @Entity
 @Table(name = "users")
-public class User {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PersistableUser {
     public enum Gender {MALE, FEMALE}
 
-    public User() {
-    }
-
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonIgnore
-    @OneToOne(cascade=CascadeType.PERSIST, mappedBy = "user")
-    private SalaryHistory salaryHistory;
+    @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "user")
+    private PersistableSalaryHistory salaryHistory;
 
     @Column(name = "username")
     @NonNull

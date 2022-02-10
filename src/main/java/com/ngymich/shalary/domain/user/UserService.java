@@ -1,5 +1,8 @@
 package com.ngymich.shalary.domain.user;
 
+import com.ngymich.shalary.application.User.UserDTO;
+import com.ngymich.shalary.infrastructure.persistence.user.IUserRepository;
+import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +17,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-/*    public User addUser(UserDTO userDto) {
-        User user = User.builder()
+    public PersistableUser addUser(UserDTO userDto) {
+        PersistableUser user = PersistableUser.builder()
                 .username(userDto.getUsername())
                 .password(userDto.getPassword())
                 .mail(userDto.getMail())
@@ -24,18 +27,18 @@ public class UserService {
                 .education(userDto.getEducation())
                 .age(userDto.getAge())
                 .gender(userDto.getGender())
-//                .salaryHistory(userDto.getSalaryHistory())
+                .salaryHistory(userDto.getSalaryHistory())
                 .build();
 
         this.userRepository.save(user);
         return user;
-    }*/
+    }
 
-    public List<User> getUsers() {
+    public List<PersistableUser> getUsers() {
         return this.userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Long userId) {
+    public Optional<PersistableUser> getUserById(Long userId) {
         return this.userRepository.findById(userId);
     }
 
