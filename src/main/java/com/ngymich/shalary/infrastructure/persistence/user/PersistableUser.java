@@ -1,14 +1,11 @@
 package com.ngymich.shalary.infrastructure.persistence.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Data
 @Entity
@@ -16,9 +13,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersistableUser implements Serializable {
-    private static final long serialVersionUID = 102L;
-
+public class PersistableUser {
     public enum Gender {MALE, FEMALE}
 
     @Id
@@ -28,7 +23,6 @@ public class PersistableUser implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
-//    @JsonIgnoreProperties("salaryHistory")
     private PersistableSalaryHistory salaryHistory;
 
     @Column(name = "username")

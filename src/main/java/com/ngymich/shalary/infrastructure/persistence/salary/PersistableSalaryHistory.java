@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersistableSalaryHistory implements Serializable {
-    private static final long serialVersionUID = 101L;
+public class PersistableSalaryHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +36,12 @@ public class PersistableSalaryHistory implements Serializable {
     @Column(name = "total_years_of_experience")
     private float totalYearsOfExperience;
 
-    @JsonIgnore
-    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
-    @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    // Working
+//    @JsonIgnore
+//    @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+
+    // test
+    @OneToMany(mappedBy = "salaryHistory")
     private List<PersistableSalaryInfo> salaryInfos = new ArrayList<PersistableSalaryInfo>();
 }
