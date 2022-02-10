@@ -8,7 +8,6 @@ import lombok.NonNull;
 
 import javax.persistence.*;
 
-@JsonIgnoreProperties
 @Data
 @Entity
 @Table(name = "users")

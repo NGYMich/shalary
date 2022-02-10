@@ -4,7 +4,7 @@ VALUES ('Mich', 'Mich', 'Mich', 'Mich', 'Mich', 'Mich', 30, 'MALE'),
        ('asd', 'asd', 'asd', 'asd', 'asd', 'asd', 30, 'FEMALE');
 
 INSERT INTO SALARY_HISTORIES (salary_currency, total_years_of_experience)
-VALUES ('USD', 7.0), ('CHF', '8.0')
+VALUES ('USD', 7.0), ('CHF', '8.0'), ('TEST', 1.0)
 
 /*
 INSERT INTO ETAPE (recette_id, etape)

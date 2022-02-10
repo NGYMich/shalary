@@ -7,7 +7,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@JsonIgnoreProperties
 @Data
 @Entity
 @Table(name = "salary_histories")
