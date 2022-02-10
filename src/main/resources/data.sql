@@ -7,4 +7,4 @@ INSERT INTO SALARY_HISTORY (user_id, salary_currency, total_years_of_experience)
 VALUES (1, 'USD', 7.0), (2, 'CHF', '8.0');
 
 INSERT INTO SALARY_INFO (job_level, job_name, base_salary)
-VALUES ('Junior', 'Software Engineer', 40000.0);
+VALUES ('Junior', 'Software Engineer', 40000.0), ('Junior', 'Software Engineer', 40000.0);

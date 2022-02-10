@@ -38,10 +38,7 @@ public class PersistableSalaryHistory {
 
     // Working
 //    @JsonIgnore
-//    @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
-
-    // test
-    @OneToMany(mappedBy = "salaryHistory")
+    @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     private List<PersistableSalaryInfo> salaryInfos = new ArrayList<PersistableSalaryInfo>();
 }
