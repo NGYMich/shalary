@@ -21,8 +21,14 @@ public class SalaryController {
     }
 
     @GetMapping("/salaryHistories")
-    public ResponseEntity<?> getSalaries() {
-        log.info("Retrieving salaries");
+    public ResponseEntity<?> getSalaryHistories() {
+        log.info("Retrieving salary histories");
         return ResponseEntity.ok(this.salaryService.getSalaryHistories());
+    }
+
+    @GetMapping("/salaryInfos")
+    public ResponseEntity<?> getSalaryInfos() {
+        log.info("Retrieving salaries informations");
+        return ResponseEntity.ok(this.salaryService.getSalaryInfos());
     }
 }

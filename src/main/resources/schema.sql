@@ -24,4 +24,14 @@ CREATE TABLE IF NOT EXISTS SALARY_HISTORIES (
     FOREIGN KEY (user_id) references USERS(id)
 );
 
+DROP TABLE IF EXISTS SALARY_INFOS;
+
+CREATE TABLE IF NOT EXISTS SALARY_INFOS (
+    salary_info_id SERIAL PRIMARY KEY,
+    job_level VARCHAR(50),
+    job_name VARCHAR(150),
+    base_salary FLOAT,
+    stock_salary FLOAT,
+    bonus_salary FLOAT
+);
 

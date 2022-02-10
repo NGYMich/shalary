@@ -18,13 +18,11 @@ public class User {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @OneToOne(cascade=CascadeType.PERSIST, mappedBy = "user")
     private SalaryHistory salaryHistory;
 
     @Column(name = "username")

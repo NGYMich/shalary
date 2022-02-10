@@ -1,11 +1,13 @@
 package com.ngymich.shalary.domain.salary;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ngymich.shalary.domain.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -20,7 +22,8 @@ public class SalaryHistory {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(mappedBy = "salaryHistory")
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
 
@@ -30,6 +33,7 @@ public class SalaryHistory {
     @Column(name = "total_years_of_experience")
     private float totalYearsOfExperience;
 
-//    @Column
-//    private HashMap<Float, SalaryInfo> salaries;
+    @JsonIgnore
+    @OneToMany(mappedBy="salaryHistory", targetEntity = SalaryInfo.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SalaryInfo> salaryInfos = new ArrayList<SalaryInfo>();
 }
