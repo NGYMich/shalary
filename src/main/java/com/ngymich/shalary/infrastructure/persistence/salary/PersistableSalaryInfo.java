@@ -1,8 +1,6 @@
 package com.ngymich.shalary.infrastructure.persistence.salary;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,18 +22,18 @@ public class PersistableSalaryInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
     // Working
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @NotFound(action = NotFoundAction.IGNORE)
-
-    // Test
-//    @ManyToOne
 //    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
     private PersistableSalaryHistory salaryHistory;
+
+    @Column(name = "years_of_experience")
+    private Float yearsOfExperience;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "job_level")

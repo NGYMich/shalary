@@ -1,14 +1,13 @@
 package com.ngymich.shalary.domain.user;
 
 import com.ngymich.shalary.application.User.UserDTO;
-import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import com.ngymich.shalary.infrastructure.persistence.salary.SalaryHistoryJpaRepository;
 import com.ngymich.shalary.infrastructure.persistence.salary.SalaryInfosJpaRepository;
-import com.ngymich.shalary.infrastructure.persistence.user.UserJpaRepository;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
+import com.ngymich.shalary.infrastructure.persistence.user.UserJpaRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,25 +26,27 @@ public class UserService {
     }
 
     public PersistableUser addUser(UserDTO userDto) {
-        PersistableUser user = PersistableUser.builder()
+
+
+        PersistableUser user = buildUser(userDto);
+        this.userRepository.save(user);
+        return user;
+    }
+
+    private PersistableUser buildUser(UserDTO userDto) {
+
+
+        return PersistableUser.builder()
                 .username(userDto.getUsername())
                 .password(userDto.getPassword())
                 .mail(userDto.getMail())
-                .mainSector(userDto.getMainSector())
-                .location(userDto.getLocation())
-                .education(userDto.getEducation())
+                .mainSector(StringUtils.stripAccents(userDto.getMainSector()))
+                .location(StringUtils.stripAccents(userDto.getLocation()))
+                .education(StringUtils.stripAccents(userDto.getEducation()))
                 .age(userDto.getAge())
                 .gender(userDto.getGender())
                 .salaryHistory(userDto.getSalaryHistory())
                 .build();
-
-//        this.salaryInfosJpaRepository.saveAll(userDto.getSalaryHistory().getSalariesList());
-        user.getSalaryHistory().setUser(user);
-        user.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
-//        this.salaryHistoryRepository.save(user.getSalaryHistory());
-//        this.salaryInfosJpaRepository.save(userDto.getSalaryHistory().getSalaryInfos());
-        this.userRepository.save(user);
-        return user;
     }
 
     public List<PersistableUser> getUsers() {

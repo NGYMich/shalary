@@ -39,6 +39,6 @@ public class PersistableSalaryHistory {
     // Working
 //    @JsonIgnore
     @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "salary_history_id", referencedColumnName = "id", insertable = false, updatable = false)
     private List<PersistableSalaryInfo> salaryInfos = new ArrayList<PersistableSalaryInfo>();
 }

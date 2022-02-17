@@ -1,7 +1,5 @@
 package com.ngymich.shalary.infrastructure.persistence.user;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import lombok.*;
 
@@ -21,9 +19,6 @@ public class PersistableUser {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private PersistableSalaryHistory salaryHistory;
 
     @Column(name = "username")
     @NonNull
@@ -54,5 +49,10 @@ public class PersistableUser {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    private PersistableSalaryHistory salaryHistory;
 
 }

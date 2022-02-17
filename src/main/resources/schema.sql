@@ -29,6 +29,7 @@ DROP TABLE IF EXISTS SALARY_INFO;
 CREATE TABLE IF NOT EXISTS SALARY_INFO (
     id SERIAL PRIMARY KEY,
     salary_history_id INT,
+    years_of_experience FLOAT,
     job_level VARCHAR(50),
     job_name VARCHAR(150),
     base_salary FLOAT,
