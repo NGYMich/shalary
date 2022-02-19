@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS USER;
 
 CREATE TABLE IF NOT EXISTS USER (
     id SERIAL PRIMARY KEY,
+    validated BOOLEAN,
     username VARCHAR(150),
     password VARCHAR(100),
     mail VARCHAR(250),
@@ -40,3 +41,13 @@ CREATE TABLE IF NOT EXISTS SALARY_INFO (
     FOREIGN KEY (salary_history_id) references SALARY_HISTORY(id)
 );
 
+DROP TABLE IF EXISTS COMPANY;
+
+CREATE TABLE IF NOT EXISTS COMPANY (
+   id SERIAL PRIMARY KEY,
+   salary_info_id INT,
+   name VARCHAR(150),
+   sector VARCHAR(50),
+   size VARCHAR(150),
+   FOREIGN KEY (salary_info_id) references SALARY_INFO(id)
+);

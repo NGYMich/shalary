@@ -1,8 +1,8 @@
 package com.ngymich.shalary.web.controller;
 
 import com.ngymich.shalary.application.User.UserDTO;
-import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import com.ngymich.shalary.domain.user.UserService;
+import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,13 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -38,8 +41,27 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDto) {
         log.info("Adding user " + userDto.getUsername());
-        userDto.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
-        return ResponseEntity.ok(this.userService.addUser(userDto));
+        try {
+            return ResponseEntity.ok(this.userService.addUser(userDto));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/users")
+    public List<PersistableUser> addUsers(@RequestBody List<UserDTO> userDTOS) {
+        String usernames = userDTOS.stream().map(UserDTO::getUsername).collect(Collectors.joining(","));
+        log.info("Adding users " + usernames);
+        List<PersistableUser> addedUsers = new ArrayList<>();
+        userDTOS.forEach(user -> {
+            try {
+                PersistableUser addedUser = this.userService.addUser(user);
+                addedUsers.add(addedUser);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return addedUsers;
     }
 
     @Transactional

@@ -1,7 +1,7 @@
 package com.ngymich.shalary.infrastructure.persistence.salary;
 
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,8 +36,6 @@ public class PersistableSalaryHistory {
     @Column(name = "total_years_of_experience")
     private float totalYearsOfExperience;
 
-    // Working
-//    @JsonIgnore
     @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "salary_history_id", referencedColumnName = "id", insertable = false, updatable = false)
     private List<PersistableSalaryInfo> salaryInfos = new ArrayList<PersistableSalaryInfo>();

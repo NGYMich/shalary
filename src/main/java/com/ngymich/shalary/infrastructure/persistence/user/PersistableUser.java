@@ -12,13 +12,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersistableUser {
-    public enum Gender {MALE, FEMALE}
+    public enum Gender {Male, Female, Unknown}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "validated")
+    private boolean validated = false;
 
     @Column(name = "username")
     @NonNull
@@ -32,7 +34,6 @@ public class PersistableUser {
     @NonNull
     private String mail;
 
-
     @Column(name = "main_sector")
     private String mainSector;
 
@@ -42,17 +43,14 @@ public class PersistableUser {
     @Column(name = "education")
     private String education;
 
-
     @Column(name = "age")
     private int age;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private Gender gender;
-
+    private Gender gender = Gender.Unknown;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableSalaryHistory salaryHistory;
-
 }

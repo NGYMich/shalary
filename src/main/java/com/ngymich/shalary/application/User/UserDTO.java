@@ -14,6 +14,7 @@ public class UserDTO {
     private String mainSector;
     private String location;
     private String education;
+    private boolean validated = false;
 
     private int age;
     private PersistableUser.Gender gender;
