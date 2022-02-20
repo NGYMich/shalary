@@ -17,6 +17,7 @@ public class UserDTO {
 
     private int age;
     private String gender;
+    private String comment;
 
     private PersistableSalaryHistory salaryHistory;
 }

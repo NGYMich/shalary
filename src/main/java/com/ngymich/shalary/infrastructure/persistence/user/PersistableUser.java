@@ -47,6 +47,9 @@ public class PersistableUser {
     @Column(name = "gender")
     private String gender;
 
+    @Column(name = "comment")
+    private String comment;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableSalaryHistory salaryHistory;

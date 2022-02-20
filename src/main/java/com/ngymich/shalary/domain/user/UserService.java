@@ -53,15 +53,16 @@ public class UserService {
         sortSalaryHistoryByYearsOfExperience(userDto);
 
         return PersistableUser.builder()
-                .username(userDto.getUsername())
+                .username(Optional.of(userDto.getUsername().trim()).orElse(null))
                 .password(userDto.getPassword())
-                .mail(userDto.getMail())
+                .mail(userDto.getMail().trim())
                 .validated(userDto.isValidated())
-                .mainSector(StringUtils.stripAccents(userDto.getMainSector()))
-                .location(StringUtils.stripAccents(userDto.getLocation()))
-                .education(StringUtils.stripAccents(userDto.getEducation()))
+                .mainSector(StringUtils.stripAccents(Optional.ofNullable((userDto.getMainSector())).map(String::trim).orElse(null)))
+                .location(StringUtils.stripAccents(Optional.ofNullable((userDto.getLocation())).map(String::trim).orElse(null)))
+                .education(StringUtils.stripAccents(Optional.ofNullable((userDto.getEducation())).map(String::trim).orElse(null)))
                 .age(userDto.getAge())
                 .gender(userDto.getGender())
+                .comment(StringUtils.stripAccents(Optional.ofNullable((userDto.getComment())).map(String::trim).orElse(null)))
                 .salaryHistory(userDto.getSalaryHistory())
                 .build();
     }
