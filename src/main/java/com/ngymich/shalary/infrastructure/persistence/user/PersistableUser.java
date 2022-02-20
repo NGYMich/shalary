@@ -12,8 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersistableUser {
-    public enum Gender {Male, Female, Unknown}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -46,9 +44,8 @@ public class PersistableUser {
     @Column(name = "age")
     private int age;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private Gender gender = Gender.Unknown;
+    private String gender;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")

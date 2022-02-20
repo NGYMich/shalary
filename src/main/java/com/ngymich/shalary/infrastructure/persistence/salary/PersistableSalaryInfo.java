@@ -29,7 +29,7 @@ public class PersistableSalaryInfo {
     private PersistableSalaryHistory salaryHistory;
 
     @Column(name = "years_of_experience")
-    private Float yearsOfExperience;
+    private Float yearsOfExperience = 0F;
 
     @Column(name = "job_level")
     private String jobLevel;

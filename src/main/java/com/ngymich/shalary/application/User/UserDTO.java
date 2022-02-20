@@ -1,7 +1,6 @@
 package com.ngymich.shalary.application.User;
 
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
-import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -17,7 +16,7 @@ public class UserDTO {
     private boolean validated = false;
 
     private int age;
-    private PersistableUser.Gender gender;
+    private String gender;
 
     private PersistableSalaryHistory salaryHistory;
 }

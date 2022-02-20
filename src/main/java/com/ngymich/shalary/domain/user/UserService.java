@@ -38,13 +38,17 @@ public class UserService {
 
         userDto.getSalaryHistory()
                 .getSalaryInfos()
-                .forEach(salaryInfo -> salaryInfo.setTotalSalary(
-                        salaryInfo.getBaseSalary() + salaryInfo.getBonusSalary() + salaryInfo.getStockSalary()
-                ));
+                .forEach(salaryInfo -> {
+                    Double totalSalary = 0D;
+                    if (salaryInfo.getBaseSalary() != null) totalSalary += salaryInfo.getBaseSalary();
+                    if (salaryInfo.getBonusSalary() != null) totalSalary += salaryInfo.getBonusSalary();
+                    if (salaryInfo.getStockSalary() != null) totalSalary += salaryInfo.getStockSalary();
+                    salaryInfo.setTotalSalary(totalSalary);
+                });
 
-        if (!isValidEmailAddress(userDto.getMail())) {
-            throw new Exception("Mail isn't valid.");
-        }
+//        if (!isValidEmailAddress(userDto.getMail())) {
+//            throw new Exception("Mail isn't valid.");
+//        }
 
         sortSalaryHistoryByYearsOfExperience(userDto);
 
