@@ -1,6 +1,6 @@
 INSERT INTO USER (username, validated, password, mail, main_sector, location, education, age, gender)
-VALUES ('Crystalis', false, 'pw1', 'test@gmail.com', 'IT', 'Paris', 'Masters', 24, 'Male'),
-       ('Random', false, 'pw2', 'test2@gmail.com', 'Economics', 'London', 'No education', 34, 'Female');
+VALUES ('Crystalis', false, 'pw1', 'test@gmail.com', 'IT', 'United States', 'Masters', 24, 'Male'),
+       ('Random', false, 'pw2', 'test2@gmail.com', 'Economics', 'Italy', 'No education', 34, 'Female');
 
 INSERT INTO SALARY_HISTORY (user_id, salary_currency, total_years_of_experience)
 VALUES (1, '$', 7.0),

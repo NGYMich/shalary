@@ -1,6 +1,8 @@
 package com.ngymich.shalary.domain.user;
 
 import com.ngymich.shalary.application.User.UserDTO;
+import com.ngymich.shalary.domain.country.Country;
+import com.ngymich.shalary.domain.location.LocationService;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import com.ngymich.shalary.infrastructure.persistence.salary.SalaryHistoryJpaRepository;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
@@ -13,17 +15,19 @@ import javax.mail.internet.InternetAddress;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserJpaRepository userRepository;
     private final SalaryHistoryJpaRepository salaryHistoryRepository;
+    private final LocationService locationService;
 
-
-    public UserService(UserJpaRepository userRepository, SalaryHistoryJpaRepository salaryHistoryRepository) {
+    public UserService(UserJpaRepository userRepository, SalaryHistoryJpaRepository salaryHistoryRepository, LocationService locationService) {
         this.userRepository = userRepository;
         this.salaryHistoryRepository = salaryHistoryRepository;
+        this.locationService = locationService;
     }
 
     public PersistableUser addUser(UserDTO userDto) throws Exception {
@@ -71,8 +75,36 @@ public class UserService {
         userDto.getSalaryHistory().getSalaryInfos().sort(Comparator.comparing(PersistableSalaryInfo::getYearsOfExperience));
     }
 
-    public List<PersistableUser> getUsers() {
-        return this.userRepository.findAll();
+    public List<User> getUsers() {
+        List<Country> countriesWithFlags = this.locationService.getCountriesWithFlags();
+        List<PersistableUser> persistableUsers = this.userRepository.findAll();
+        return persistableUsers
+                .stream()
+                .map(persistableUser -> {
+                    List<Country> filteredCountries = countriesWithFlags
+                            .stream()
+                            .filter(country -> country.getName().equals(persistableUser.getLocation()))
+                            .collect(Collectors.toList());
+                    String locationImage = null;
+                    if (!filteredCountries.isEmpty()) locationImage = filteredCountries.get(0).getFlag();
+                    return User
+                            .builder()
+                            .age(persistableUser.getAge())
+                            .id(persistableUser.getId())
+                            .comment(persistableUser.getComment())
+                            .username(persistableUser.getUsername())
+                            .education(persistableUser.getEducation())
+                            .gender(persistableUser.getGender())
+                            .mail(persistableUser.getMail())
+                            .mainSector(persistableUser.getMainSector())
+                            .password(persistableUser.getPassword())
+                            .validated(persistableUser.isValidated())
+                            .salaryHistory(persistableUser.getSalaryHistory())
+                            .location(persistableUser.getLocation())
+                            .locationImage(locationImage)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
     public Optional<PersistableUser> getUserById(Long userId) {

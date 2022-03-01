@@ -1,6 +1,8 @@
 package com.ngymich.shalary.web.controller;
 
 import com.ngymich.shalary.application.User.UserDTO;
+import com.ngymich.shalary.domain.country.Country;
+import com.ngymich.shalary.domain.user.User;
 import com.ngymich.shalary.domain.user.UserService;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +23,15 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, LocationController locationController) {
         this.userService = userService;
     }
 
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
         log.info("Retrieving all users");
-        return ResponseEntity.ok(this.userService.getUsers());
+        List<User> users = this.userService.getUsers();
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/users/{user_id}")
