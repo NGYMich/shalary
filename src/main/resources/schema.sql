@@ -1,3 +1,5 @@
+-- noinspection SqlResolveForFile @ object-type/"SERIAL"
+
 /*h2*/
 
 DROP TABLE IF EXISTS USER;
