@@ -34,6 +34,13 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/mostPopularCountries")
+    public ResponseEntity<?> getMostPopularCountriesFromUsers() {
+        log.info("Retrieving most popular countries");
+        List<Country> users = this.userService.getMostPopularCountriesFromUsers();
+        return ResponseEntity.ok(users);
+    }
+
     @GetMapping("/users/{user_id}")
     public ResponseEntity<?> getUserById(@PathVariable("user_id") Long userId) {
         log.info("Retrieving user " + userId);

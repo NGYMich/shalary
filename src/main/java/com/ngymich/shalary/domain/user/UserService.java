@@ -14,6 +14,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,39 @@ public class UserService {
     private final SalaryHistoryJpaRepository salaryHistoryRepository;
     private final LocationService locationService;
 
+    public List<Country> getMostPopularCountriesFromUsers() {
+
+        List<Country> countriesWithFlags = locationService.getCountriesWithFlags();
+
+        return this.getUsers()
+                .stream()
+                .collect(Collectors.groupingBy(User::getLocation, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(5)
+                .collect(Collectors.toList()).stream().map(Map.Entry::getKey).collect(Collectors.toList())
+                .stream()
+                .map(countryName -> {
+                    List<Country> collect = countriesWithFlags
+                            .stream()
+                            .filter(countryWithFlag -> countryWithFlag.getName().equals(countryName))
+                            .collect(Collectors.toList());
+
+                    String flag = null;
+                    if (!collect.isEmpty()) {
+                        flag = collect.get(0).getFlag();
+                    }
+
+                    return Country
+                            .builder()
+                            .name(countryName)
+                            .flag(flag)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
     public UserService(UserJpaRepository userRepository, SalaryHistoryJpaRepository salaryHistoryRepository, LocationService locationService) {
         this.userRepository = userRepository;
         this.salaryHistoryRepository = salaryHistoryRepository;
@@ -31,30 +65,31 @@ public class UserService {
     }
 
     public PersistableUser addUser(UserDTO userDto) throws Exception {
-        userDto.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
         PersistableUser user = buildUser(userDto);
-
         this.userRepository.save(user);
         return user;
     }
 
     private PersistableUser buildUser(UserDTO userDto) throws Exception {
-
-        userDto.getSalaryHistory()
-                .getSalaryInfos()
-                .forEach(salaryInfo -> {
-                    Double totalSalary = 0D;
-                    if (salaryInfo.getBaseSalary() != null) totalSalary += salaryInfo.getBaseSalary();
-                    if (salaryInfo.getBonusSalary() != null) totalSalary += salaryInfo.getBonusSalary();
-                    if (salaryInfo.getStockSalary() != null) totalSalary += salaryInfo.getStockSalary();
-                    salaryInfo.setTotalSalary(totalSalary);
-                });
+        if (userDto.getSalaryHistory() != null) {
+            if (!userDto.getSalaryHistory().getSalaryInfos().isEmpty()) {
+                userDto.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
+                userDto.getSalaryHistory()
+                        .getSalaryInfos()
+                        .forEach(salaryInfo -> {
+                            Double totalSalary = 0D;
+                            if (salaryInfo.getBaseSalary() != null) totalSalary += salaryInfo.getBaseSalary();
+                            if (salaryInfo.getBonusSalary() != null) totalSalary += salaryInfo.getBonusSalary();
+                            if (salaryInfo.getStockSalary() != null) totalSalary += salaryInfo.getStockSalary();
+                            salaryInfo.setTotalSalary(totalSalary);
+                        });
+                sortSalaryHistoryByYearsOfExperience(userDto);
+            }
+        }
 
 //        if (!isValidEmailAddress(userDto.getMail())) {
 //            throw new Exception("Mail isn't valid.");
 //        }
-
-        sortSalaryHistoryByYearsOfExperience(userDto);
 
         return PersistableUser.builder()
                 .username(Optional.of(userDto.getUsername().trim()).orElse(null))
