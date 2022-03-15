@@ -24,14 +24,14 @@ public class LocationController {
 
     @GetMapping("/locations/countriesWithFlags")
     public ResponseEntity<?> getCountriesWithFlags() {
-        log.info("Retrieving countries with flags");
+        log.info("Retrieving countries with flags...");
         List<Country> countries = this.locationService.getCountriesWithFlags();
         return ResponseEntity.ok(countries);
     }
 
     @GetMapping("/locations/countriesWithFlagsAndStates")
     public ResponseEntity<?> getCountriesWithFlagsAndStates() {
-        log.info("Retrieving countries with flags");
+        log.info("Retrieving countries with flags...");
         List<Country> countries = this.locationService.getCountriesWithTheirStates();
         return ResponseEntity.ok(countries);
     }

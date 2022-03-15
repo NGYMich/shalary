@@ -3,6 +3,7 @@ package com.ngymich.shalary.domain.user;
 import com.ngymich.shalary.application.User.UserDTO;
 import com.ngymich.shalary.domain.country.Country;
 import com.ngymich.shalary.domain.location.LocationService;
+import com.ngymich.shalary.infrastructure.persistence.company.PersistableCompany;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import com.ngymich.shalary.infrastructure.persistence.salary.SalaryHistoryJpaRepository;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
@@ -35,7 +36,7 @@ public class UserService {
                 .entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(10)
+                .limit(7)
                 .collect(Collectors.toList()).stream().map(Map.Entry::getKey).collect(Collectors.toList())
                 .stream()
                 .map(countryName -> {
@@ -85,6 +86,9 @@ public class UserService {
                             totalSalary += salaryInfo.getBonusSalary();
                             totalSalary += salaryInfo.getStockSalary();
                             salaryInfo.setTotalSalary(totalSalary);
+                            if (salaryInfo.getCompany() == null) {
+                                salaryInfo.setCompany(PersistableCompany.builder().build());
+                            }
                         });
                 sortSalaryHistoryByYearsOfExperience(userDto);
             }
