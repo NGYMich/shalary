@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -30,13 +29,10 @@ public class LocationController {
         return ResponseEntity.ok(countries);
     }
 
-    @GetMapping("/countriesWithFlagsAndStates")
+    @GetMapping("/locations/countriesWithFlagsAndStates")
     public ResponseEntity<?> getCountriesWithFlagsAndStates() {
         log.info("Retrieving countries with flags");
-        Map<Country, List<String>> countries = this.locationService.getCountriesWithTheirStates();
+        List<Country> countries = this.locationService.getCountriesWithTheirStates();
         return ResponseEntity.ok(countries);
     }
-
-
-
 }

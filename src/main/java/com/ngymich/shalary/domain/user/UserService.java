@@ -35,7 +35,7 @@ public class UserService {
                 .entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(5)
+                .limit(10)
                 .collect(Collectors.toList()).stream().map(Map.Entry::getKey).collect(Collectors.toList())
                 .stream()
                 .map(countryName -> {
@@ -78,9 +78,12 @@ public class UserService {
                         .getSalaryInfos()
                         .forEach(salaryInfo -> {
                             Double totalSalary = 0D;
-                            if (salaryInfo.getBaseSalary() != null) totalSalary += salaryInfo.getBaseSalary();
-                            if (salaryInfo.getBonusSalary() != null) totalSalary += salaryInfo.getBonusSalary();
-                            if (salaryInfo.getStockSalary() != null) totalSalary += salaryInfo.getStockSalary();
+                            if (salaryInfo.getBaseSalary() == null) salaryInfo.setBaseSalary(0D);
+                            if (salaryInfo.getBonusSalary() == null) salaryInfo.setBonusSalary(0D);
+                            if (salaryInfo.getStockSalary() == null) salaryInfo.setStockSalary(0D);
+                            totalSalary += salaryInfo.getBaseSalary();
+                            totalSalary += salaryInfo.getBonusSalary();
+                            totalSalary += salaryInfo.getStockSalary();
                             salaryInfo.setTotalSalary(totalSalary);
                         });
                 sortSalaryHistoryByYearsOfExperience(userDto);

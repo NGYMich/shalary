@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -23,7 +22,7 @@ class LocationServiceIT {
 
     @Test
     void should_get_countries_with_their_states() {
-        Map<Country, List<String>> countriesWithTheirStates = locationService.getCountriesWithTheirStates();
+        List<Country> countriesWithTheirStates = locationService.getCountriesWithTheirStates();
         assertFalse(countriesWithTheirStates.isEmpty());
     }
 }
