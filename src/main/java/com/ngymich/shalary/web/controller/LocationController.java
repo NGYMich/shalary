@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,7 +26,12 @@ public class LocationController {
     @GetMapping("/locations/countriesWithFlags")
     public ResponseEntity<?> getCountriesWithFlags() {
         log.info("Retrieving countries with flags...");
-        List<Country> countries = this.locationService.getCountriesWithFlags();
+        List<Country> countries = new ArrayList<>();
+        try {
+            countries = this.locationService.getCountriesWithFlags();
+        } catch (Exception e){
+            log.error("Could not retrieve countries : " + e);
+        }
         return ResponseEntity.ok(countries);
     }
 

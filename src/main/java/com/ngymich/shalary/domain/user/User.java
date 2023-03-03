@@ -20,5 +20,4 @@ public class User {
     private String gender;
     private String comment;
     private PersistableSalaryHistory salaryHistory;
-
 }

@@ -9,6 +9,7 @@ import lombok.NonNull;
 @Builder
 public class UserDTO {
 
+    private Long id;
     @NonNull private String username;
     @NonNull private String password;
     @NonNull private String mail;

@@ -50,7 +50,11 @@ public class PersistableUser {
     @Column(name = "comment")
     private String comment;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableSalaryHistory salaryHistory;
+
+    public String toString() {
+        return this.username;
+    }
 }

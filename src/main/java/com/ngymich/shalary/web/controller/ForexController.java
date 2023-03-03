@@ -30,7 +30,7 @@ public class ForexController {
             log.info("Forexes retrieved : {}", forexes);
             return ResponseEntity.ok(forexes);
         } catch (Exception e) {
-            log.error("Failed to retrieve forexes :", e);
+            log.error("Failed to retrieve forexes (probably due to limit)" + e);
         }
         return ResponseEntity.ok(forexes);
     }

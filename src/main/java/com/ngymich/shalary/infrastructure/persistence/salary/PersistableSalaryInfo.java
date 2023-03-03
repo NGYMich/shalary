@@ -25,7 +25,6 @@ public class PersistableSalaryInfo {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @NotFound(action = NotFoundAction.IGNORE)
     private PersistableSalaryHistory salaryHistory;
 
     @Column(name = "years_of_experience")
@@ -52,7 +51,7 @@ public class PersistableSalaryInfo {
     @Column(name = "net_total_salary")
     private Double netTotalSalary;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableCompany company;
 }

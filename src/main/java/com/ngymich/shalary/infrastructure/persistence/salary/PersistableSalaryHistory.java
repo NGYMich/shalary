@@ -31,12 +31,12 @@ public class PersistableSalaryHistory {
 
 
     @Column(name = "salary_currency")
-    private String salaryCurrency;
+    private String salaryCurrency = "";
 
     @Column(name = "total_years_of_experience")
-    private float totalYearsOfExperience;
+    private float totalYearsOfExperience = 0F;
 
-    @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "salary_history_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "salary_history_id", referencedColumnName = "id", insertable = true, updatable = true)
     private List<PersistableSalaryInfo> salaryInfos = new ArrayList<PersistableSalaryInfo>();
 }

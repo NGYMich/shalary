@@ -4,12 +4,15 @@ import com.ngymich.shalary.application.User.UserDTO;
 import com.ngymich.shalary.domain.country.Country;
 import com.ngymich.shalary.domain.location.LocationService;
 import com.ngymich.shalary.infrastructure.persistence.company.PersistableCompany;
+import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import com.ngymich.shalary.infrastructure.persistence.salary.SalaryHistoryJpaRepository;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import com.ngymich.shalary.infrastructure.persistence.user.UserJpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -19,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -65,13 +69,38 @@ public class UserService {
         this.locationService = locationService;
     }
 
-    public PersistableUser addUser(UserDTO userDto) throws Exception {
+    public PersistableUser addUser(UserDTO userDto) {
         PersistableUser user = buildUser(userDto);
         this.userRepository.save(user);
+        log.info("User {} saved", user.getUsername());
         return user;
     }
 
-    private PersistableUser buildUser(UserDTO userDto) throws Exception {
+    public PersistableUser updateUser(UserDTO userDto) {
+        // Retrieving user
+        PersistableUser user = buildUser(userDto);
+        PersistableUser userFromRepository = this.userRepository.findById(user.getId()).orElseThrow(() -> new NotFoundException("user" + user.getUsername() + " not found"));
+
+        // Retrieving salary history
+        PersistableSalaryHistory salaryHistory = salaryHistoryRepository.getById(userFromRepository.getSalaryHistory().getId());
+
+        // Setting salary infos in salary history with new user salary infos
+        salaryHistory.setSalaryInfos(user.getSalaryHistory().getSalaryInfos());
+
+        // Setting salary history for each salary info
+        salaryHistory.getSalaryInfos().forEach(persistableSalaryInfo -> persistableSalaryInfo.setSalaryHistory(salaryHistory));
+
+        // Setting salary history for the user
+        userFromRepository.setSalaryHistory(salaryHistory);
+
+        // Saving the entity
+        userRepository.save(userFromRepository);
+
+        log.info("User {} updated", user.getUsername());
+        return userFromRepository;
+    }
+
+    private PersistableUser buildUser(UserDTO userDto) {
         if (userDto.getSalaryHistory() != null) {
             if (!userDto.getSalaryHistory().getSalaryInfos().isEmpty()) {
                 userDto.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
@@ -88,10 +117,14 @@ public class UserService {
                             salaryInfo.setTotalSalary(totalSalary);
                             if (salaryInfo.getCompany() == null) {
                                 salaryInfo.setCompany(PersistableCompany.builder().build());
+                            } else {
+//                                salaryInfo.getCompany().setSalaryInfo(salaryInfo);
+                                salaryInfo.setCompany(salaryInfo.getCompany());
                             }
                         });
                 sortSalaryHistoryByYearsOfExperience(userDto);
             }
+            userDto.getSalaryHistory().setTotalYearsOfExperience();
         }
 
 //        if (!isValidEmailAddress(userDto.getMail())) {
@@ -99,6 +132,7 @@ public class UserService {
 //        }
 
         return PersistableUser.builder()
+                .id(userDto.getId())
                 .username(Optional.of(userDto.getUsername().trim()).orElse(null))
                 .password(userDto.getPassword())
                 .mail(userDto.getMail().trim())
@@ -120,6 +154,7 @@ public class UserService {
     public List<User> getUsers() {
         List<Country> countriesWithFlags = this.locationService.getCountriesWithFlags();
         List<PersistableUser> persistableUsers = this.userRepository.findAll();
+        log.info("Retrieved {} users", persistableUsers.size());
         return persistableUsers
                 .stream()
                 .map(persistableUser -> {
@@ -153,9 +188,24 @@ public class UserService {
         return this.userRepository.findById(userId);
     }
 
+    public Optional<PersistableUser> verifyByPassword(Long userId, String password) {
+        Optional<PersistableUser> user = this.userRepository.findById(userId);
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
+            return user;
+        }
+        return Optional.empty();
+    }
+
     public void deleteUserById(Long userId) {
+        PersistableUser user = this.userRepository.getById(userId);
         this.salaryHistoryRepository.deleteById(userId);
         this.userRepository.deleteById(userId);
+        log.info("Deleted user [{}], id : {}", user.getUsername(), user.getId());
+
+    }
+
+    public void deleteAll() {
+        this.userRepository.deleteAll();
     }
 
     public static boolean isValidEmailAddress(String email) {
