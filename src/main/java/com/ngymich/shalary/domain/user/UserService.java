@@ -85,19 +85,39 @@ public class UserService {
         PersistableSalaryHistory salaryHistory = salaryHistoryRepository.getById(userFromRepository.getSalaryHistory().getId());
 
         // Setting salary infos in salary history with new user salary infos
-        salaryHistory.setSalaryInfos(user.getSalaryHistory().getSalaryInfos());
+        setSalaryHistoryInformations(user.getSalaryHistory(), salaryHistory);
 
         // Setting salary history for each salary info
         salaryHistory.getSalaryInfos().forEach(persistableSalaryInfo -> persistableSalaryInfo.setSalaryHistory(salaryHistory));
 
         // Setting salary history for the user
-        userFromRepository.setSalaryHistory(salaryHistory);
+        setUserInformations(userDto, userFromRepository, salaryHistory);
 
         // Saving the entity
         userRepository.save(userFromRepository);
 
         log.info("User {} updated", user.getUsername());
         return userFromRepository;
+    }
+
+    private static void setUserInformations(UserDTO userDto, PersistableUser userFromRepository, PersistableSalaryHistory salaryHistory) {
+        userFromRepository.setValidated(userDto.isValidated());
+        userFromRepository.setUsername(userDto.getUsername());
+        userFromRepository.setPassword(userDto.getPassword());
+        userFromRepository.setMainSector(userDto.getMainSector());
+        userFromRepository.setLocation(userDto.getLocation());
+        userFromRepository.setEducation(userDto.getEducation());
+        userFromRepository.setMail(userDto.getMail());
+        userFromRepository.setAge(userDto.getAge());
+        userFromRepository.setGender(userDto.getGender());
+        userFromRepository.setComment(userDto.getComment());
+        userFromRepository.setSalaryHistory(salaryHistory);
+    }
+
+    private static void setSalaryHistoryInformations(PersistableSalaryHistory persistableSalaryHistory, PersistableSalaryHistory salaryHistory) {
+        salaryHistory.setSalaryInfos(persistableSalaryHistory.getSalaryInfos());
+        salaryHistory.setTotalYearsOfExperience(persistableSalaryHistory.getTotalYearsOfExperience());
+        salaryHistory.setSalaryCurrency(persistableSalaryHistory.getSalaryCurrency());
     }
 
     private PersistableUser buildUser(UserDTO userDto) {
@@ -124,7 +144,7 @@ public class UserService {
                         });
                 sortSalaryHistoryByYearsOfExperience(userDto);
             }
-            userDto.getSalaryHistory().setTotalYearsOfExperience();
+//            userDto.getSalaryHistory().setTotalYearsOfExperience();
         }
 
 //        if (!isValidEmailAddress(userDto.getMail())) {
