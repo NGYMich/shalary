@@ -13,4 +13,4 @@
 -- INSERT INTO COMPANY (name, sector, size)
 -- VALUES ('Company1', 'IT', '50000'),
 --        ('Company2', 'FASTFOOD', '25000');
-SELECT * FROM USER;
+-- SELECT * FROM USER;

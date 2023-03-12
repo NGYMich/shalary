@@ -14,13 +14,14 @@ import java.util.List;
 @Service
 public class SalaryService {
 
-    @Autowired Environment env;
+    @Autowired private Environment env;
     private final SalaryHistoryJpaRepository salaryHistoryRepository;
     private final SalaryInfosJpaRepository salaryInfosRepository;
 
-    public SalaryService(SalaryHistoryJpaRepository salaryHistoryRepository, SalaryInfosJpaRepository salaryInfosRepository) {
+    public SalaryService(SalaryHistoryJpaRepository salaryHistoryRepository, SalaryInfosJpaRepository salaryInfosRepository, Environment env) {
         this.salaryHistoryRepository = salaryHistoryRepository;
         this.salaryInfosRepository = salaryInfosRepository;
+        this.env = env;
         System.out.println("Current active profiles : " + Arrays.toString(env.getActiveProfiles()));
     }
 
