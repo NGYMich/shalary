@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "USER" (
     education VARCHAR(500),
     age FLOAT,
     gender VARCHAR(20),
-    comment VARCHAR(10000),
+    comment VARCHAR(10000)
 );
 
 
