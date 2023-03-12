@@ -22,19 +22,19 @@ public class SalaryController {
 
     @GetMapping("/salaryHistories")
     public ResponseEntity<?> getSalaryHistories() {
-        log.info("Retrieving salary histories");
+        log.info("Retrieving salary histories..");
         return ResponseEntity.ok(this.salaryService.getSalaryHistories());
     }
 
     @GetMapping("/salaryInfos")
     public ResponseEntity<?> getSalaryInfos() {
-        log.info("Retrieving salaries informations");
+        log.info("Retrieving salaries informations..");
         return ResponseEntity.ok(this.salaryService.getSalaryInfos());
     }
 
     @PostMapping("/salaryInfo")
     public ResponseEntity<?> addUser(@RequestBody PersistableSalaryInfo salaryInfo) {
-        log.info("Adding salary");
+        log.info("Adding salary..");
         return ResponseEntity.ok(this.salaryService.addSalaryInfo(salaryInfo));
     }
 

@@ -104,10 +104,10 @@ public class UserService {
         userFromRepository.setValidated(userDto.isValidated());
         userFromRepository.setUsername(userDto.getUsername());
         userFromRepository.setPassword(userDto.getPassword());
+        userFromRepository.setMail(userDto.getMail());
         userFromRepository.setMainSector(userDto.getMainSector());
         userFromRepository.setLocation(userDto.getLocation());
         userFromRepository.setEducation(userDto.getEducation());
-        userFromRepository.setMail(userDto.getMail());
         userFromRepository.setAge(userDto.getAge());
         userFromRepository.setGender(userDto.getGender());
         userFromRepository.setComment(userDto.getComment());

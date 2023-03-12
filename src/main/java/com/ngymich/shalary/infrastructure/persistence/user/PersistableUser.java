@@ -53,8 +53,4 @@ public class PersistableUser {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableSalaryHistory salaryHistory;
-
-    public String toString() {
-        return this.username;
-    }
 }

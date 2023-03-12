@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
-        log.info("Retrieving all users");
+        log.info("Retrieving all users..");
         List<User> users = this.userService.getUsers();
         return ResponseEntity.ok(users);
     }
