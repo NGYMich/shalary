@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "USER" (
+CREATE TABLE IF NOT EXISTS "user" (
     id SERIAL PRIMARY KEY,
     validated BOOLEAN,
     username VARCHAR(150),
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS SALARY_HISTORY (
   user_id INT,
   salary_currency VARCHAR(10),
     total_years_of_experience FLOAT,
-    FOREIGN KEY (user_id) references "USER"(id)
+    FOREIGN KEY (user_id) references "user"(id)
 );
 
 
