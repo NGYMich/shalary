@@ -38,7 +38,7 @@ public class ForexService {
     public Double getForexForPair(String pair) {
 
         try {
-            log.info("Calling Forex Api to get pairs...");
+            log.info("Calling Forex Api to get pair {}", pair);
             String liveRate = this.freeForexApiClient.getLiveRateForPair(pair, "ultra", "c8a3cf4af735cb168a92");
             @SuppressWarnings("rawtypes") HashMap liveRates = new ObjectMapper().readValue(liveRate, HashMap.class);
             return (Double) liveRates.get(pair);
