@@ -49,12 +49,16 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getUserById(userId));
     }
 
+//    @PostMapping("/retrieveUserWithPassword")
+//    public ResponseEntity<?> getUserByPassword(@RequestBody RequestUserDTO requestUserDTO) {
+//        log.info("Retrieving user {} with password. UserId : ", requestUserDTO.getId());
+//        return ResponseEntity.ok(this.userService.verifyByPassword(requestUserDTO.getId(), requestUserDTO.getPassword()));
+//    }
+
     @PostMapping("/retrieveUserWithPassword")
-    public ResponseEntity<?> getUserByPassword(
-            @RequestBody RequestUserDTO requestUserDTO
-    ) {
-        log.info("Retrieving user {} with password. UserId : ", requestUserDTO.getId());
-        return ResponseEntity.ok(this.userService.verifyByPassword(requestUserDTO.getId(), requestUserDTO.getPassword()));
+    public ResponseEntity<?> getUserByPassword(@RequestBody RequestUserDTO requestUserDTO) {
+        log.info("Retrieving user {} with password.", requestUserDTO.getUsername());
+        return ResponseEntity.ok(this.userService.getUserThroughPassword(requestUserDTO.getUsername(), requestUserDTO.getPassword()));
     }
 
     @PostMapping("/user")

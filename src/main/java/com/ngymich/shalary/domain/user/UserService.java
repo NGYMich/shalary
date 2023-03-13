@@ -208,8 +208,12 @@ public class UserService {
         return this.userRepository.findById(userId);
     }
 
-    public Optional<PersistableUser> verifyByPassword(Long userId, String password) {
-        Optional<PersistableUser> user = this.userRepository.findById(userId);
+    public Optional<PersistableUser> getUserThroughPassword(String username, String password) {
+        Optional<PersistableUser> user = this.userRepository.findAll()
+                .stream()
+                .filter(persistableUser -> persistableUser.getUsername().equals(username) && persistableUser.getPassword().equals(password))
+                .findFirst();
+
         if (user.isPresent() && user.get().getPassword().equals(password)) {
             return user;
         }
