@@ -26,7 +26,7 @@ public class ForexController {
         log.info("Retrieving forexes...");
         Map<String, Double> forexes = null;
         try {
-            forexes = this.forexService.getForexForTopPairs();
+            forexes = this.forexService.getForexTopPairs();
             log.info("Forexes retrieved : {}", forexes);
             return ResponseEntity.ok(forexes);
         } catch (Exception e) {

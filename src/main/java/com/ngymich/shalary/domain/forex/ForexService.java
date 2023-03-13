@@ -6,6 +6,7 @@ import com.ngymich.shalary.infrastructure.backends.freeForexApi.FreeForexApiClie
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,10 +21,17 @@ import java.util.stream.Stream;
 public class ForexService {
 
     private final FreeForexApiClient freeForexApiClient;
+    private Map<String, Double> forexTopPairs;
 
     @Autowired
     public ForexService(FreeForexApiClient freeForexApiClient) {
         this.freeForexApiClient = freeForexApiClient;
+        refreshForex();
+    }
+
+    @Scheduled(cron = "0 0 0/1 * * ?")
+    public void refreshForex() {
+        this.forexTopPairs = this.getForexForTopPairs();
     }
 
     @Cacheable("singleForexPair")
@@ -32,8 +40,8 @@ public class ForexService {
         try {
             log.info("Calling Forex Api to get pairs...");
             String liveRate = this.freeForexApiClient.getLiveRateForPair(pair, "ultra", "c8a3cf4af735cb168a92");
-            @SuppressWarnings("rawtypes") HashMap mapping = new ObjectMapper().readValue(liveRate, HashMap.class);
-            return (Double) mapping.get(pair);
+            @SuppressWarnings("rawtypes") HashMap liveRates = new ObjectMapper().readValue(liveRate, HashMap.class);
+            return (Double) liveRates.get(pair);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             log.error("Error on Forex Call");
@@ -44,7 +52,6 @@ public class ForexService {
     @Cacheable("allForexPairs")
     public Map<String, Double> getForexForTopPairs() {
         List<String> defaultCurrencies = Stream.of("EUR", "USD", "GBP", "JPY", "CHF", "AUD", "CAD").collect(Collectors.toList());
-//        List<String> defaultCurrencies = Stream.of("GBP", "USD").collect(Collectors.toList());
         List<String> forexPairs = new ArrayList<>();
 
         for (int i = 0; i < defaultCurrencies.size(); i++) {
@@ -53,10 +60,12 @@ public class ForexService {
                     forexPairs.add(defaultCurrencies.get(i) + "_" + defaultCurrency);
             }
         }
-        Map<String, Double> result = forexPairs.stream()
+        return forexPairs.stream()
                 .distinct()
                 .collect(Collectors.toMap(name -> name, this::getForexForPair));
-        return result;
     }
 
+    public Map<String, Double> getForexTopPairs() {
+        return forexTopPairs;
+    }
 }
