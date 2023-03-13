@@ -31,12 +31,15 @@ public class ForexService {
 
     @Scheduled(cron = "0 0 0/1 * * ?")
     public void refreshForex() {
-        this.forexTopPairs = this.getForexForTopPairs();
+        try {
+            this.forexTopPairs = this.getForexForTopPairs();
+        } catch (Exception e) {
+            log.error("Error while refreshing forex : ", e);
+        }
     }
 
-    @Cacheable("singleForexPair")
+    @Cacheable("forex")
     public Double getForexForPair(String pair) {
-
         try {
             log.info("Calling Forex Api to get pair {}", pair);
             String liveRate = this.freeForexApiClient.getLiveRateForPair(pair, "ultra", "c8a3cf4af735cb168a92");
@@ -49,7 +52,7 @@ public class ForexService {
         return 0D;
     }
 
-    @Cacheable("allForexPairs")
+    @Cacheable("forex")
     public Map<String, Double> getForexForTopPairs() {
         List<String> defaultCurrencies = Stream.of("EUR", "USD", "GBP", "JPY", "CHF", "AUD", "CAD").collect(Collectors.toList());
         List<String> forexPairs = new ArrayList<>();
