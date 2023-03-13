@@ -23,10 +23,22 @@ public class ForexController {
 
     @GetMapping("/forex/topForexes")
     public ResponseEntity<?> getTopForexes() {
-        log.info("Retrieving forexes...");
         Map<String, Double> forexes = null;
         try {
             forexes = this.forexService.getForexTopPairs();
+            log.info("Forexes retrieved : {}", forexes);
+            return ResponseEntity.ok(forexes);
+        } catch (Exception e) {
+            log.error("Failed to retrieve forexes (probably due to limit)" + e);
+        }
+        return ResponseEntity.ok(forexes);
+    }
+
+    @GetMapping("/forex/refreshForex")
+    public ResponseEntity<?> refreshForex() {
+        Map<String, Double> forexes = null;
+        try {
+            this.forexService.refreshForex();
             log.info("Forexes retrieved : {}", forexes);
             return ResponseEntity.ok(forexes);
         } catch (Exception e) {

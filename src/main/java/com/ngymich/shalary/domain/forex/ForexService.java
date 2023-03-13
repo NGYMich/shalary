@@ -32,6 +32,7 @@ public class ForexService {
     @Scheduled(cron = "0 0 0/1 * * ?")
     public void refreshForex() {
         try {
+            log.info("Refreshing forex..");
             this.forexTopPairs = this.getForexForTopPairs();
         } catch (Exception e) {
             log.error("Error while refreshing forex : ", e);
@@ -69,6 +70,7 @@ public class ForexService {
     }
 
     public Map<String, Double> getForexTopPairs() {
+        log.info("Retrieving forexes...");
         return forexTopPairs;
     }
 }
