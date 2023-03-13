@@ -123,6 +123,10 @@ public class UserService {
     private PersistableUser buildUser(UserDTO userDto) {
         if (userDto.getSalaryHistory() != null) {
             if (!userDto.getSalaryHistory().getSalaryInfos().isEmpty()) {
+                Float latestYearsOfExperience = userDto.getSalaryHistory().getSalaryInfos().get(userDto.getSalaryHistory().getSalaryInfos().size() - 1).getYearsOfExperience();
+                if (userDto.getSalaryHistory().getTotalYearsOfExperience() < latestYearsOfExperience) {
+                    userDto.getSalaryHistory().setTotalYearsOfExperience(latestYearsOfExperience);
+                }
                 userDto.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
                 userDto.getSalaryHistory()
                         .getSalaryInfos()
@@ -138,13 +142,11 @@ public class UserService {
                             if (salaryInfo.getCompany() == null) {
                                 salaryInfo.setCompany(PersistableCompany.builder().build());
                             } else {
-//                                salaryInfo.getCompany().setSalaryInfo(salaryInfo);
                                 salaryInfo.setCompany(salaryInfo.getCompany());
                             }
                         });
                 sortSalaryHistoryByYearsOfExperience(userDto);
             }
-//            userDto.getSalaryHistory().setTotalYearsOfExperience();
         }
 
 //        if (!isValidEmailAddress(userDto.getMail())) {

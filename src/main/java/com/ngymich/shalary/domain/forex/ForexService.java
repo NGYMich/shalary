@@ -1,6 +1,5 @@
 package com.ngymich.shalary.domain.forex;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ngymich.shalary.infrastructure.backends.freeForexApi.FreeForexApiClient;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ public class ForexService {
     @Autowired
     public ForexService(FreeForexApiClient freeForexApiClient) {
         this.freeForexApiClient = freeForexApiClient;
-        refreshForex();
+        this.refreshForex();
     }
 
     @Scheduled(cron = "0 0 0/1 * * ?")
@@ -46,9 +45,8 @@ public class ForexService {
             String liveRate = this.freeForexApiClient.getLiveRateForPair(pair, "ultra", "c8a3cf4af735cb168a92");
             @SuppressWarnings("rawtypes") HashMap liveRates = new ObjectMapper().readValue(liveRate, HashMap.class);
             return (Double) liveRates.get(pair);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            log.error("Error on Forex Call");
+        } catch (Exception e) {
+            log.error("Error on forex call : " + e);
         }
         return 0D;
     }
