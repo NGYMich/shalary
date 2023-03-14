@@ -16,6 +16,7 @@ import org.webjars.NotFoundException;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -166,6 +167,7 @@ public class UserService {
                 .gender(userDto.getGender())
                 .comment(StringUtils.stripAccents(Optional.ofNullable((userDto.getComment())).map(String::trim).orElse(null)))
                 .salaryHistory(userDto.getSalaryHistory())
+                .lastUpdateTimestamp(LocalDateTime.now())
                 .build();
     }
 

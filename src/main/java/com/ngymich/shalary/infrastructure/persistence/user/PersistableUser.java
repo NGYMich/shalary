@@ -4,6 +4,7 @@ import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHi
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -53,4 +54,7 @@ public class PersistableUser {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableSalaryHistory salaryHistory;
+
+    @Column(name = "last_update_timestamp")
+    private LocalDateTime lastUpdateTimestamp;
 }

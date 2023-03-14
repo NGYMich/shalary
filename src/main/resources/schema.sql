@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS "user" (
     education VARCHAR(500),
     age FLOAT,
     gender VARCHAR(20),
-    comment VARCHAR(10000)
+    comment VARCHAR(10000),
+    last_update_timestamp VARCHAR(200)
 );
 
 

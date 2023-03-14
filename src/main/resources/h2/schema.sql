@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS USER (
     education VARCHAR(500),
     age FLOAT,
     gender VARCHAR(20),
-    comment VARCHAR(10000)
+    comment VARCHAR(10000),
+    last_update_timestamp VARCHAR(200)
 );
 
 DROP TABLE IF EXISTS SALARY_HISTORY;
