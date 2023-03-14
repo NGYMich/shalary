@@ -16,6 +16,7 @@ import org.webjars.NotFoundException;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -189,6 +190,7 @@ public class UserService {
                             .collect(Collectors.toList());
                     String locationImage = null;
                     if (!filteredCountries.isEmpty()) locationImage = filteredCountries.get(0).getFlag();
+                    LocalDate lastUpdate =  persistableUser.getLastUpdateTimestamp() != null ? persistableUser.getLastUpdateTimestamp().toLocalDate() : null;
                     return User
                             .builder()
                             .age(persistableUser.getAge())
@@ -204,6 +206,7 @@ public class UserService {
                             .salaryHistory(persistableUser.getSalaryHistory())
                             .location(persistableUser.getLocation())
                             .locationImage(locationImage)
+                            .lastUpdate(lastUpdate)
                             .build();
                 })
                 .collect(Collectors.toList());

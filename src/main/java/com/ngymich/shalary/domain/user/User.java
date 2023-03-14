@@ -5,6 +5,8 @@ import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHi
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 public class User {
@@ -22,4 +24,5 @@ public class User {
     private String gender;
     private String comment;
     private PersistableSalaryHistory salaryHistory;
+    private LocalDate lastUpdate;
 }
