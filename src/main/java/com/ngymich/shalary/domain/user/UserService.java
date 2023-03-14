@@ -113,6 +113,7 @@ public class UserService {
         userFromRepository.setGender(userDto.getGender());
         userFromRepository.setComment(userDto.getComment());
         userFromRepository.setSalaryHistory(salaryHistory);
+        userFromRepository.setLastUpdateTimestamp(LocalDateTime.now());
     }
 
     private static void setSalaryHistoryInformations(PersistableSalaryHistory persistableSalaryHistory, PersistableSalaryHistory salaryHistory) {
