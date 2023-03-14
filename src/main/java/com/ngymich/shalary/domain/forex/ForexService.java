@@ -25,7 +25,7 @@ public class ForexService {
     @Autowired
     public ForexService(FreeForexApiClient freeForexApiClient) {
         this.freeForexApiClient = freeForexApiClient;
-//        this.refreshForex();
+        this.refreshForex();
     }
 
     @Scheduled(cron = "0 0 0/1 * * ?")
