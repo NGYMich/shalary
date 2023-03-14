@@ -183,6 +183,7 @@ public class UserService {
         log.info("Retrieved {} users", persistableUsers.size());
         return persistableUsers
                 .stream()
+                .sorted(Comparator.comparing(PersistableUser::getLastUpdateTimestamp).reversed())
                 .map(persistableUser -> {
                     List<Country> filteredCountries = countriesWithFlags
                             .stream()
