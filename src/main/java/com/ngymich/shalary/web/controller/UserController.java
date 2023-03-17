@@ -107,7 +107,7 @@ public class UserController {
     @Transactional
     @DeleteMapping(path = "/users")
     public ResponseEntity<Long> deleteAllUsers() {
-        this.userService.deleteAll();
+//        this.userService.deleteAll();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

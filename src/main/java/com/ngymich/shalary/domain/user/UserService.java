@@ -109,6 +109,7 @@ public class UserService {
         userFromRepository.setMail(userDto.getMail());
         userFromRepository.setMainSector(userDto.getMainSector());
         userFromRepository.setLocation(userDto.getLocation());
+        userFromRepository.setCity(userDto.getCity());
         userFromRepository.setEducation(userDto.getEducation());
         userFromRepository.setAge(userDto.getAge());
         userFromRepository.setGender(userDto.getGender());
@@ -130,6 +131,9 @@ public class UserService {
                 if (userDto.getSalaryHistory().getTotalYearsOfExperience() < latestYearsOfExperience) {
                     userDto.getSalaryHistory().setTotalYearsOfExperience(latestYearsOfExperience);
                 }
+
+
+
                 userDto.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
                 userDto.getSalaryHistory()
                         .getSalaryInfos()
@@ -155,7 +159,10 @@ public class UserService {
 //        if (!isValidEmailAddress(userDto.getMail())) {
 //            throw new Exception("Mail isn't valid.");
 //        }
-
+        Integer age = null;
+        if (userDto.getAge() != null) {
+            age = userDto.getAge() == 0 ? null : userDto.getAge();
+        }
         return PersistableUser.builder()
                 .id(userDto.getId())
                 .username(Optional.of(userDto.getUsername().trim()).orElse(null))
@@ -165,12 +172,21 @@ public class UserService {
                 .mainSector(StringUtils.stripAccents(Optional.ofNullable((userDto.getMainSector())).map(String::trim).orElse(null)))
                 .location(StringUtils.stripAccents(Optional.ofNullable((userDto.getLocation())).map(String::trim).orElse(null)))
                 .education(StringUtils.stripAccents(Optional.ofNullable((userDto.getEducation())).map(String::trim).orElse(null)))
-                .age(userDto.getAge() != 0 ?  userDto.getAge() : null)
+                .city(userDto.getCity())
+                .age(age)
                 .gender(userDto.getGender())
                 .comment(StringUtils.stripAccents(Optional.ofNullable((userDto.getComment())).map(String::trim).orElse(null)))
                 .salaryHistory(userDto.getSalaryHistory())
                 .lastUpdateTimestamp(LocalDateTime.now())
                 .build();
+    }
+
+    private Double calculateTotalSalary(PersistableSalaryInfo salaryInfo) {
+        double totalSalary = 0D;
+        if (salaryInfo.getBaseSalary() != null) totalSalary += salaryInfo.getBaseSalary();
+        if (salaryInfo.getBonusSalary() != null) totalSalary += salaryInfo.getBonusSalary();
+        if (salaryInfo.getStockSalary() != null) totalSalary += salaryInfo.getStockSalary();
+        return totalSalary;
     }
 
     private void sortSalaryHistoryByYearsOfExperience(UserDTO userDto) {
@@ -191,7 +207,7 @@ public class UserService {
                             .collect(Collectors.toList());
                     String locationImage = null;
                     if (!filteredCountries.isEmpty()) locationImage = filteredCountries.get(0).getFlag();
-                    LocalDate lastUpdate =  persistableUser.getLastUpdateTimestamp() != null ? persistableUser.getLastUpdateTimestamp().toLocalDate() : null;
+                    LocalDate lastUpdate = persistableUser.getLastUpdateTimestamp() != null ? persistableUser.getLastUpdateTimestamp().toLocalDate() : null;
                     return User
                             .builder()
                             .age(persistableUser.getAge())
@@ -207,6 +223,7 @@ public class UserService {
                             .salaryHistory(persistableUser.getSalaryHistory())
                             .location(persistableUser.getLocation())
                             .locationImage(locationImage)
+                            .city(persistableUser.getCity())
                             .lastUpdate(lastUpdate)
                             .build();
                 })

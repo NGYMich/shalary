@@ -36,6 +36,9 @@ public class PersistableSalaryInfo {
     @Column(name = "job_name")
     private String jobName;
 
+    @Column(name = "contract_type")
+    private String contractType;
+
     @Column(name = "base_salary")
     private Double baseSalary = 0.0;
 
@@ -54,4 +57,5 @@ public class PersistableSalaryInfo {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableCompany company;
+
 }

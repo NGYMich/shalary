@@ -19,6 +19,7 @@ public class User {
     private String mainSector;
     private String location;
     private String locationImage;
+    private String city;
     private String education;
     private Integer age;
     private String gender;

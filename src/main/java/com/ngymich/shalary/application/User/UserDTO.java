@@ -15,6 +15,7 @@ public class UserDTO {
     @NonNull private String mail;
     private String mainSector;
     private String location;
+    private String city;
     private String education;
     private boolean validated = false;
 

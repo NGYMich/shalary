@@ -39,6 +39,9 @@ public class PersistableUser {
     @Column(name = "location")
     private String location;
 
+    @Column(name = "city")
+    private String city;
+
     @Column(name = "education")
     private String education;
 
