@@ -165,7 +165,7 @@ public class UserService {
                 .mainSector(StringUtils.stripAccents(Optional.ofNullable((userDto.getMainSector())).map(String::trim).orElse(null)))
                 .location(StringUtils.stripAccents(Optional.ofNullable((userDto.getLocation())).map(String::trim).orElse(null)))
                 .education(StringUtils.stripAccents(Optional.ofNullable((userDto.getEducation())).map(String::trim).orElse(null)))
-                .age(userDto.getAge())
+                .age(userDto.getAge() != 0 ?  userDto.getAge() : null)
                 .gender(userDto.getGender())
                 .comment(StringUtils.stripAccents(Optional.ofNullable((userDto.getComment())).map(String::trim).orElse(null)))
                 .salaryHistory(userDto.getSalaryHistory())

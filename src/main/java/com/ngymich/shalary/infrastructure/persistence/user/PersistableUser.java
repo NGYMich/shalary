@@ -43,7 +43,7 @@ public class PersistableUser {
     private String education;
 
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
     @Column(name = "gender")
     private String gender;
