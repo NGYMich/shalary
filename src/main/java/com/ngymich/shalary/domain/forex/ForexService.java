@@ -21,7 +21,7 @@ public class ForexService {
 
     private final FreeForexApiClient freeForexApiClient;
     private Map<String, Double> forexTopPairs;
-
+    private boolean hasForexApiReachedCallLimits = false;
     @Autowired
     public ForexService(FreeForexApiClient freeForexApiClient) {
         this.freeForexApiClient = freeForexApiClient;
@@ -32,6 +32,7 @@ public class ForexService {
     public void refreshForex() {
         try {
             log.info("Refreshing forex..");
+            this.hasForexApiReachedCallLimits = false;
             this.forexTopPairs = this.getForexForTopPairs();
         } catch (Exception e) {
             log.error("Error while refreshing forex : ", e);
@@ -41,12 +42,17 @@ public class ForexService {
     @Cacheable("forex")
     public Double getForexForPair(String pair) {
         try {
-            log.info("Calling Forex Api to get pair {}", pair);
-            String liveRate = this.freeForexApiClient.getLiveRateForPair(pair, "ultra", "c8a3cf4af735cb168a92");
-            @SuppressWarnings("rawtypes") HashMap liveRates = new ObjectMapper().readValue(liveRate, HashMap.class);
-            return (Double) liveRates.get(pair);
+            if (!this.hasForexApiReachedCallLimits) {
+                log.info("Calling Forex Api to get pair {}", pair);
+                String liveRate = this.freeForexApiClient.getLiveRateForPair(pair, "ultra", "c8a3cf4af735cb168a92");
+                @SuppressWarnings("rawtypes") HashMap liveRates = new ObjectMapper().readValue(liveRate, HashMap.class);
+                return (Double) liveRates.get(pair);
+            }
+
         } catch (Exception e) {
             log.error("Error on forex call : " + e);
+            log.error("Forex API has reached calling limits. Stopping the loop to get rest of forexes.");
+            this.hasForexApiReachedCallLimits = true;
         }
         return 0D;
     }

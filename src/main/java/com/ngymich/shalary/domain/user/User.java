@@ -20,7 +20,7 @@ public class User {
     private String location;
     private String locationImage;
     private String education;
-    private int age;
+    private Integer age;
     private String gender;
     private String comment;
     private PersistableSalaryHistory salaryHistory;

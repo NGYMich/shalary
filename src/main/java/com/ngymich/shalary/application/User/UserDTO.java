@@ -18,7 +18,7 @@ public class UserDTO {
     private String education;
     private boolean validated = false;
 
-    private int age;
+    private Integer age;
     private String gender;
     private String comment;
 
