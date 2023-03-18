@@ -125,17 +125,18 @@ public class UserService {
     }
 
     private PersistableUser buildUser(UserDTO userDto) {
-        if (userDto.getSalaryHistory() != null) {
-            if (!userDto.getSalaryHistory().getSalaryInfos().isEmpty()) {
-                Float latestYearsOfExperience = userDto.getSalaryHistory().getSalaryInfos().get(userDto.getSalaryHistory().getSalaryInfos().size() - 1).getYearsOfExperience();
-                if (userDto.getSalaryHistory().getTotalYearsOfExperience() < latestYearsOfExperience) {
-                    userDto.getSalaryHistory().setTotalYearsOfExperience(latestYearsOfExperience);
+        PersistableSalaryHistory salaryHistory = userDto.getSalaryHistory();
+        if (salaryHistory != null) {
+            if (!salaryHistory.getSalaryInfos().isEmpty()) {
+                Float latestYearsOfExperience = salaryHistory.getSalaryInfos().get(salaryHistory.getSalaryInfos().size() - 1).getYearsOfExperience();
+                if (salaryHistory.getTotalYearsOfExperience() < latestYearsOfExperience) {
+                    salaryHistory.setTotalYearsOfExperience(latestYearsOfExperience);
                 }
 
 
 
-                userDto.getSalaryHistory().getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(userDto.getSalaryHistory()));
-                userDto.getSalaryHistory()
+                salaryHistory.getSalaryInfos().forEach(salaryInfo -> salaryInfo.setSalaryHistory(salaryHistory));
+                salaryHistory
                         .getSalaryInfos()
                         .forEach(salaryInfo -> {
                             Double totalSalary = 0D;
@@ -146,6 +147,7 @@ public class UserService {
                             totalSalary += salaryInfo.getBonusSalary();
                             totalSalary += salaryInfo.getStockSalary();
                             salaryInfo.setTotalSalary(totalSalary);
+                            salaryInfo.getCompany().setSalaryInfo(salaryInfo);
                             if (salaryInfo.getCompany() == null) {
                                 salaryInfo.setCompany(PersistableCompany.builder().build());
                             } else {
@@ -172,11 +174,11 @@ public class UserService {
                 .mainSector(StringUtils.stripAccents(Optional.ofNullable((userDto.getMainSector())).map(String::trim).orElse(null)))
                 .location(StringUtils.stripAccents(Optional.ofNullable((userDto.getLocation())).map(String::trim).orElse(null)))
                 .education(StringUtils.stripAccents(Optional.ofNullable((userDto.getEducation())).map(String::trim).orElse(null)))
-                .city(userDto.getCity())
+                .city((userDto.getCity() != null && userDto.getCity().equals("")) ? null : userDto.getCity())
                 .age(age)
                 .gender(userDto.getGender())
                 .comment(StringUtils.stripAccents(Optional.ofNullable((userDto.getComment())).map(String::trim).orElse(null)))
-                .salaryHistory(userDto.getSalaryHistory())
+                .salaryHistory(salaryHistory)
                 .lastUpdateTimestamp(LocalDateTime.now())
                 .build();
     }
@@ -248,7 +250,7 @@ public class UserService {
 
     public void deleteUserById(Long userId) {
         PersistableUser user = this.userRepository.getById(userId);
-        this.salaryHistoryRepository.deleteById(userId);
+//        this.salaryHistoryRepository.deleteById(userId);
         this.userRepository.deleteById(userId);
         log.info("Deleted user [{}], id : {}", user.getUsername(), user.getId());
 

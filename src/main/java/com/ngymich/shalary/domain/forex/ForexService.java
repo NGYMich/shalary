@@ -51,7 +51,7 @@ public class ForexService {
 
         } catch (Exception e) {
             log.error("Error on forex call : " + e);
-            log.error("Forex API has reached calling limits. Stopping the loop to get rest of forexes.");
+            log.error("Forex API has reached calling limits. Stopping the forex loading loop.");
             this.hasForexApiReachedCallLimits = true;
         }
         return 0D;

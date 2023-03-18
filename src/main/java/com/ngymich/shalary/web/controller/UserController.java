@@ -105,11 +105,34 @@ public class UserController {
     }
 
     @Transactional
-    @DeleteMapping(path = "/users")
-    public ResponseEntity<Long> deleteAllUsers() {
-//        this.userService.deleteAll();
+    @DeleteMapping(path = "/users/")
+    public ResponseEntity<Long> deleteUsers(@RequestBody List<Integer> userIdsToDelete) {
+        userIdsToDelete.forEach(userId -> {
+            if (this.userService.getUserById(Long.valueOf(userId)).isPresent()) {
+                this.userService.deleteUserById(Long.valueOf(userId));
+            }
+        });
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Transactional
+    @DeleteMapping(path = "/deleteUsersWithRange/{fromUserId}/{toUserId}")
+    public ResponseEntity<Long> deleteUsersWithRange(@PathVariable int fromUserId, @PathVariable int toUserId) {
+        for (int i = fromUserId; i <= toUserId; i++) {
+            if (this.userService.getUserById((long) i).isPresent()) {
+                this.userService.deleteUserById((long) i);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+//    @Transactional
+//    @DeleteMapping(path = "/users")
+//    public ResponseEntity<Long> deleteAllUsers() {
+//        this.userService.deleteAll();
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
 
 }
