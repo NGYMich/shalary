@@ -14,4 +14,10 @@ public class CacheConfig {
             return new CaffeineCache("forex",
                 Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build());
     }
+
+    @Bean
+    public CaffeineCache countriesCache() {
+        return new CaffeineCache("countries",
+                Caffeine.newBuilder().expireAfterWrite(24, TimeUnit.HOURS).build());
+    }
 }

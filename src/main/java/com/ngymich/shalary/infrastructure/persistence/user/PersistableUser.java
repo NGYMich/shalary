@@ -1,12 +1,12 @@
 package com.ngymich.shalary.infrastructure.persistence.user;
 
+import com.ngymich.shalary.application.user.UserDTO;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -20,20 +20,17 @@ public class PersistableUser implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "validated")
-    private boolean validated = false;
-
-    @Column(name = "username")
+    @Column
     @NonNull
-    private String username;
+    private String email;
 
     @Column(name = "password")
     @NonNull
     private String password;
 
-    @Column(name = "mail")
+    @Column(name = "username")
     @NonNull
-    private String mail;
+    private String username;
 
     @Column(name = "main_sector")
     private String mainSector;
@@ -41,11 +38,11 @@ public class PersistableUser implements Serializable {
     @Column(name = "location")
     private String location;
 
-    @Column(name = "city")
-    private String city;
-
     @Column(name = "education")
     private String education;
+
+    @Column(name = "city")
+    private String city;
 
     @Column(name = "age")
     private Integer age;
@@ -60,25 +57,22 @@ public class PersistableUser implements Serializable {
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableSalaryHistory salaryHistory;
 
-    @Column(name = "last_update_timestamp")
-    private LocalDateTime lastUpdateTimestamp;
-
-
     @Column(name = "created_date", nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Date createdDate;
+    protected LocalDate createdDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Date modifiedDate;
+    @Column(name = "modified_date")
+    protected LocalDate modifiedDate;
 
+    @Column(name = "provider")
     private String provider;
-    @Column(name = "provider_user_id")
-    private String providerUserId;
-    @Column(name = "display_name")
-    private String displayName;
 
-    private String email;
+    @Column(name = "thumbs_up")
+    private Integer thumbsUp;
 
-    @Column(name = "enabled", columnDefinition = "BIT", length = 1)
-    private boolean enabled;
+    @Column(name = "thumbs_down")
+    private Integer thumbsDown;
+
+
+    @Column(name = "validated")
+    private boolean validated = false;
 }

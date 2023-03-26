@@ -39,12 +39,8 @@ public class LocalUserDetailService implements UserDetailsService {
         return createLocalUser(user);
     }
 
-    /**
-     * @param user
-     * @return
-     */
     private LocalUser createLocalUser(PersistableUser user) {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        return new LocalUser(user.getEmail(), user.getPassword(), user.isEnabled(), true, true, true, authorities, user);
+        return new LocalUser(user.getEmail(), user.getPassword(), true, true, true, true, authorities, user);
     }
 }

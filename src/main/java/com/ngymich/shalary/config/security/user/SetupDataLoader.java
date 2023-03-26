@@ -1,9 +1,5 @@
 package com.ngymich.shalary.config.security.user;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Set;
-
 import com.ngymich.shalary.application.authentication.SocialProvider;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import com.ngymich.shalary.infrastructure.persistence.user.UserJpaRepository;
@@ -13,6 +9,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 
 @Component
@@ -32,13 +30,12 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         PersistableUser user = userRepository.findByEmail(email);
         if (user == null) {
             user = new PersistableUser();
-            user.setDisplayName("Admin");
+            user.setUsername("Admin");
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode("admin@"));
             user.setProvider(SocialProvider.LOCAL.getProviderType());
-            user.setEnabled(true);
-            Date now = Calendar.getInstance().getTime();
-//            user.setCreatedDate(now);
+            LocalDate now = LocalDate.now();
+            user.setCreatedDate(now);
             user.setModifiedDate(now);
             user = userRepository.save(user);
         }

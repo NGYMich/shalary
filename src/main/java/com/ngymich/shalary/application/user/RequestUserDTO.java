@@ -1,4 +1,4 @@
-package com.ngymich.shalary.domain.user;
+package com.ngymich.shalary.application.user;
 
 import lombok.Builder;
 import lombok.Data;

@@ -9,13 +9,7 @@ import com.ngymich.shalary.application.authentication.LocalUser;
 import com.ngymich.shalary.application.authentication.SocialProvider;
 import com.ngymich.shalary.application.authentication.UserInfo;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-/**
- *
- * @author Chinna
- *
- */
 public class GeneralUtils {
 
     public static SocialProvider toSocialProvider(String providerId) {
@@ -30,6 +24,12 @@ public class GeneralUtils {
 
     public static UserInfo buildUserInfo(LocalUser localUser) {
         PersistableUser user = localUser.getUser();
-        return new UserInfo(user.getId().toString(), user.getDisplayName(), user.getEmail());
+
+        return UserInfo
+                .builder()
+                .id(user.getId().toString())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
     }
 }
