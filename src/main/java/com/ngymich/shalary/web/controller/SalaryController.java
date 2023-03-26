@@ -1,6 +1,5 @@
 package com.ngymich.shalary.web.controller;
 
-import com.ngymich.shalary.application.User.UserDTO;
 import com.ngymich.shalary.domain.salary.SalaryService;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import lombok.extern.slf4j.Slf4j;

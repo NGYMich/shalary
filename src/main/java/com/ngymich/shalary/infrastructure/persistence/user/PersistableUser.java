@@ -4,15 +4,17 @@ import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHi
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "user", schema= "public")
+@Table(name = "user", schema = "public")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersistableUser {
+public class PersistableUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -60,4 +62,23 @@ public class PersistableUser {
 
     @Column(name = "last_update_timestamp")
     private LocalDateTime lastUpdateTimestamp;
+
+
+    @Column(name = "created_date", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date createdDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date modifiedDate;
+
+    private String provider;
+    @Column(name = "provider_user_id")
+    private String providerUserId;
+    @Column(name = "display_name")
+    private String displayName;
+
+    private String email;
+
+    @Column(name = "enabled", columnDefinition = "BIT", length = 1)
+    private boolean enabled;
 }

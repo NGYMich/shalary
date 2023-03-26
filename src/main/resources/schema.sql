@@ -1,5 +1,10 @@
 -- noinspection SqlResolveForFile @ object-type/"SERIAL"
 
+DROP TABLE IF EXISTS COMPANY;
+DROP TABLE IF EXISTS SALARY_INFO;
+DROP TABLE IF EXISTS SALARY_HISTORY;
+DROP TABLE IF EXISTS "user";
+
 
 CREATE TABLE IF NOT EXISTS "user" (
     id SERIAL PRIMARY KEY,
@@ -14,7 +19,14 @@ CREATE TABLE IF NOT EXISTS "user" (
     age FLOAT,
     gender VARCHAR(20),
     comment VARCHAR(10000),
-    last_update_timestamp VARCHAR(200)
+    created_date VARCHAR(200),
+    modified_date VARCHAR(200),
+    provider_user_id VARCHAR(200),
+    provider VARCHAR(200),
+    last_update_timestamp VARCHAR(200),
+    display_name VARCHAR(200),
+    enabled VARCHAR(200),
+    email VARCHAR(200)
 );
 
 

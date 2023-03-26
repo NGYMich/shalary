@@ -1,15 +1,19 @@
 package com.ngymich.shalary.web.controller;
 
-import com.ngymich.shalary.application.User.UserDTO;
+import com.ngymich.shalary.application.authentication.LocalUser;
+import com.ngymich.shalary.application.user.UserDTO;
+import com.ngymich.shalary.application.util.GeneralUtils;
+import com.ngymich.shalary.config.security.user.CurrentUser;
 import com.ngymich.shalary.domain.country.Country;
 import com.ngymich.shalary.domain.user.RequestUserDTO;
 import com.ngymich.shalary.domain.user.User;
-import com.ngymich.shalary.domain.user.UserService;
+import com.ngymich.shalary.domain.user.UserServiceImpl;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +26,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public UserController(UserService userService, LocationController locationController) {
+    public UserController(UserServiceImpl userService, LocationController locationController) {
         this.userService = userService;
     }
 
@@ -124,6 +128,31 @@ public class UserController {
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/user/me")
+    public ResponseEntity<?> getCurrentUser(@CurrentUser LocalUser user) {
+        return ResponseEntity.ok(GeneralUtils.buildUserInfo(user));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getContent() {
+        return ResponseEntity.ok("Public content goes here");
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserContent() {
+        return ResponseEntity.ok("User content goes here");
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<?> getAdminContent() {
+        return ResponseEntity.ok("Admin content goes here");
+    }
+
+    @GetMapping("/mod")
+    public ResponseEntity<?> getModeratorContent() {
+        return ResponseEntity.ok("Moderator content goes here");
     }
 
 

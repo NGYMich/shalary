@@ -6,5 +6,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface UserJpaRepository extends JpaRepository<PersistableUser, Long> {
 
+    PersistableUser findByEmail(String email);
 
+    boolean existsByEmail(String email);
 }

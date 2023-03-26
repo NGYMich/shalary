@@ -1,4 +1,4 @@
-package com.ngymich.shalary.application.User;
+package com.ngymich.shalary.application.user;
 
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import lombok.Builder;

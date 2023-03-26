@@ -1,6 +1,6 @@
 package com.ngymich.shalary.domain.user;
 
-import com.ngymich.shalary.application.User.UserDTO;
+import com.ngymich.shalary.application.user.UserDTO;
 import com.ngymich.shalary.domain.country.Country;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class UserServiceTest {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Test
     void getMostPopularCountries() throws Exception {
