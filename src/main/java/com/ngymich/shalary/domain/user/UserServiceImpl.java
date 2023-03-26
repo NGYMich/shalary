@@ -97,15 +97,14 @@ public class UserServiceImpl implements UserService {
 
     public PersistableUser updateUser(UserDTO userDto) {
         // Retrieving user
-        PersistableUser user = buildUser(userDto);
-        PersistableUser userFromRepository = this.userRepository.findById(user.getId()).orElseThrow(() -> new NotFoundException("user" + user.getUsername() + " not found"));
+        PersistableUser userFromRepository = this.userRepository.findById(userDto.getId()).orElseThrow(() -> new NotFoundException("user" + userDto.getUsername() + " not found"));
 
         PersistableSalaryHistory salaryHistory;
         // Retrieving salary history
         salaryHistory = userFromRepository.getSalaryHistory() != null ? salaryHistoryRepository.getById(userFromRepository.getSalaryHistory().getId()) : new PersistableSalaryHistory();
 
         // Setting salary infos in salary history with new user salary infos
-        setSalaryHistoryInformations(user.getSalaryHistory(), salaryHistory);
+        setSalaryHistoryInformations(buildSalaryHistory(userDto), salaryHistory);
 
         // Setting salary history for each salary info
         setSalaryHistoryForEachSalaryInfo(salaryHistory);
@@ -116,7 +115,7 @@ public class UserServiceImpl implements UserService {
         // Saving the entity
         userRepository.save(userFromRepository);
 
-        log.info("User {} updated", user.getUsername());
+        log.info("User {} updated", userDto.getUsername());
         return userFromRepository;
     }
 
