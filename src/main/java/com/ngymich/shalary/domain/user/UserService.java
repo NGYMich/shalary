@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
-    public PersistableUser registerNewUser(SignUpRequest signUpRequest) throws UserAlreadyExistAuthenticationException;
+    PersistableUser registerNewUser(SignUpRequest signUpRequest) throws UserAlreadyExistAuthenticationException;
 
     PersistableUser findUserByEmail(String email);
 

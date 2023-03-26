@@ -14,6 +14,8 @@ public class UserInfo {
     String email;
     String username;
 
+    boolean hasSalaryHistory;
+
     String mainSector;
     String location;
     String locationImage;

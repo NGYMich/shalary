@@ -120,9 +120,12 @@ public class UserServiceImpl implements UserService {
         return userFromRepository;
     }
 
-    private static void setUserInformations(UserDTO userDto, PersistableUser userFromRepository, PersistableSalaryHistory salaryHistory) {
+    private void setUserInformations(UserDTO userDto, PersistableUser userFromRepository, PersistableSalaryHistory salaryHistory) {
         userFromRepository.setEmail(userDto.getEmail());
-        userFromRepository.setPassword(userDto.getPassword());
+
+        if (userDto.getPassword() != null && !userDto.getPassword().equals("")) {
+            userFromRepository.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
         userFromRepository.setUsername(userDto.getUsername());
         userFromRepository.setMainSector(userDto.getMainSector());
         userFromRepository.setLocation(userDto.getLocation());

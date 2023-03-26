@@ -30,6 +30,7 @@ public class GeneralUtils {
                 .id(user.getId().toString())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .hasSalaryHistory(user.getSalaryHistory() != null)
                 .build();
     }
 }
