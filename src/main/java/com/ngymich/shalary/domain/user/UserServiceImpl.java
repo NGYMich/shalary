@@ -237,7 +237,6 @@ public class UserServiceImpl implements UserService {
 
     public List<UserDTO> getUsers() {
         long start = System.nanoTime();
-
         List<PersistableUser> persistableUsers = this.userRepository.findAll();
         List<UserDTO> sortedPersistableUsers = persistableUsers
                 .stream()
@@ -247,7 +246,7 @@ public class UserServiceImpl implements UserService {
 
         long end = System.nanoTime();
         long elapsedTime = end - start;
-        log.info("Retrieved {} users in {} seconds", sortedPersistableUsers.size(), TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS));
+        log.info("Retrieved {} users in {} seconds", sortedPersistableUsers.size(), elapsedTime / 1_000_000_000.0);
 
         return sortedPersistableUsers;
     }
