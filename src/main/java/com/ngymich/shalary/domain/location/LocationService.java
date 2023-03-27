@@ -62,7 +62,7 @@ public class LocationService {
     }
 
     public List<Country> getCountries() {
-        log.info("Retrieving countries...");
+//        log.info("Retrieving countries...");
         return countries;
     }
 

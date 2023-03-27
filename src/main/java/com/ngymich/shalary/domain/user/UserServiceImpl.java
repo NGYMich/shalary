@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -89,10 +90,17 @@ public class UserServiceImpl implements UserService {
     }
 
     public PersistableUser addUser(UserDTO userDto) {
-        PersistableUser user = buildUser(userDto);
-        PersistableUser savedUser = this.userRepository.save(user);
-        log.info("User {} saved", user.getUsername());
-        return savedUser;
+        PersistableUser user = null;
+        try {
+            user = buildUser(userDto);
+            PersistableUser savedUser = this.userRepository.save(user);
+            log.info("User {} saved", user.getUsername());
+            return savedUser;
+        } catch (Exception e) {
+            log.error("Error while adding user " + userDto.getUsername() + ". Error : [" + e.getMessage() + "]");
+        }
+
+        return user;
     }
 
     public PersistableUser updateUser(UserDTO userDto) {
@@ -228,13 +236,20 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<UserDTO> getUsers() {
+        long start = System.nanoTime();
+
         List<PersistableUser> persistableUsers = this.userRepository.findAll();
-        log.info("Retrieved {} users", persistableUsers.size());
-        return persistableUsers
+        List<UserDTO> sortedPersistableUsers = persistableUsers
                 .stream()
                 .sorted(Comparator.comparing(PersistableUser::getModifiedDate).reversed())
                 .map(this::toUserDto)
                 .collect(Collectors.toList());
+
+        long end = System.nanoTime();
+        long elapsedTime = end - start;
+        log.info("Retrieved {} users in {} seconds", sortedPersistableUsers.size(), TimeUnit.SECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS));
+
+        return sortedPersistableUsers;
     }
 
     public UserDTO toUserDto(PersistableUser persistableUser) {
