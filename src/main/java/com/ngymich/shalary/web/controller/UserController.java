@@ -88,7 +88,7 @@ public class UserController {
         String usernames = userDTOS.stream().map(UserDTO::getUsername).collect(Collectors.joining(","));
         log.info("Adding users " + Arrays.toString(usernames.split(", ")));
         List<PersistableUser> addedUsers = new ArrayList<>();
-        AtomicInteger count = new AtomicInteger(1);
+        AtomicInteger count = new AtomicInteger(0);
         userDTOS.forEach(user -> {
             try {
                 count.getAndIncrement();

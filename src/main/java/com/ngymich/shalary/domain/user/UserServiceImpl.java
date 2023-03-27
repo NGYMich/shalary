@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
         List<PersistableUser> persistableUsers = this.userRepository.findAll();
         List<UserDTO> sortedPersistableUsers = persistableUsers
                 .stream()
-                .sorted(Comparator.comparing(PersistableUser::getId).reversed())
+                .sorted(Comparator.comparing(PersistableUser::getModifiedDate).reversed())
                 .map(this::toUserDto)
                 .collect(Collectors.toList());
 
@@ -159,7 +160,7 @@ public class UserServiceImpl implements UserService {
         userFromRepository.setGender(userDto.getGender());
         userFromRepository.setComment(userDto.getComment());
         userFromRepository.setSalaryHistory(salaryHistory);
-        userFromRepository.setModifiedDate(LocalDate.now());
+        userFromRepository.setModifiedDate(LocalDateTime.now());
         userFromRepository.setThumbsUp(userDto.getThumbsUp());
         userFromRepository.setThumbsDown(userDto.getThumbsDown());
         userFromRepository.setValidated(userDto.isValidated());
@@ -186,8 +187,8 @@ public class UserServiceImpl implements UserService {
                 .gender(userDto.getGender())
                 .comment(StringUtils.stripAccents(Optional.ofNullable((userDto.getComment())).map(String::trim).orElse(null)))
                 .salaryHistory(buildSalaryHistory(userDto))
-                .createdDate(userDto.getCreatedDate() != null ? userDto.getCreatedDate() : LocalDate.now())
-                .modifiedDate(LocalDate.now())
+                .createdDate(userDto.getCreatedDate() != null ? userDto.getCreatedDate() : LocalDateTime.now())
+                .modifiedDate(LocalDateTime.now())
                 .provider(userDto.getProvider())
                 .thumbsDown(userDto.getThumbsDown())
                 .thumbsUp(userDto.getThumbsUp())
@@ -347,7 +348,7 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistAuthenticationException("User with email id " + signUpRequest.getEmail() + " already exist");
         }
         PersistableUser user = buildUser(signUpRequest);
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         user.setCreatedDate(now);
         user.setModifiedDate(now);
         user = userRepository.save(user);
@@ -361,7 +362,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(formDTO.getEmail());
         user.setPassword(passwordEncoder.encode(formDTO.getPassword()));
         user.setProvider(formDTO.getSocialProvider().getProviderType());
-        user.setCreatedDate(LocalDate.now());
+        user.setCreatedDate(LocalDateTime.now());
         return user;
     }
 

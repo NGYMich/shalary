@@ -1,6 +1,7 @@
 package com.ngymich.shalary.application.authentication;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
@@ -25,8 +26,8 @@ public class UserInfo {
     String gender;
     String comment;
     PersistableSalaryHistory salaryHistory;
-    LocalDate createdDate;
-    LocalDate modifiedDate;
+    LocalDateTime createdDate;
+    LocalDateTime modifiedDate;
     String provider;
     Integer thumbsUp = 0;
     Integer thumbsDown = 0;

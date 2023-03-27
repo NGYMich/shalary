@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Component
@@ -34,7 +35,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode("admin@"));
             user.setProvider(SocialProvider.LOCAL.getProviderType());
-            LocalDate now = LocalDate.now();
+            LocalDateTime now = LocalDateTime.now();
             user.setCreatedDate(now);
             user.setModifiedDate(now);
             user = userRepository.save(user);

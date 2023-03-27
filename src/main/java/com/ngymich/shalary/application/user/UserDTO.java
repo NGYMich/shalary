@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -26,8 +27,8 @@ public class UserDTO {
     private String gender;
     private String comment;
     private PersistableSalaryHistory salaryHistory;
-    private LocalDate createdDate;
-    private LocalDate modifiedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
     private String provider;
     private Integer thumbsUp = 0;
     private Integer thumbsDown = 0;

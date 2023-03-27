@@ -1,6 +1,7 @@
 package com.ngymich.shalary.infrastructure.persistence.salary;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ngymich.shalary.infrastructure.persistence.company.PersistableCompany;
 import lombok.*;
 import org.hibernate.annotations.NotFound;
@@ -52,8 +53,15 @@ public class PersistableSalaryInfo {
     @Column(name = "net_total_salary")
     private Double netTotalSalary;
 
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableCompany company;
+
+    @PrePersist
+    private void prePersist() {
+        this.company.setSalaryInfo(this);
+    }
+
 
 }

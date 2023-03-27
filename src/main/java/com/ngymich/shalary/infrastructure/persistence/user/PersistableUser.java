@@ -1,5 +1,6 @@
 package com.ngymich.shalary.infrastructure.persistence.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ngymich.shalary.application.user.UserDTO;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import lombok.*;
@@ -7,6 +8,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -51,18 +53,19 @@ public class PersistableUser implements Serializable {
     @Column(name = "gender")
     private String gender;
 
-    @Column(name = "comment")
+    @Column(name = "comment", length = 5000)
     private String comment;
 
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private PersistableSalaryHistory salaryHistory;
 
     @Column(name = "created_date", nullable = false, updatable = false)
-    protected LocalDate createdDate;
+    protected LocalDateTime createdDate;
 
     @Column(name = "modified_date")
-    protected LocalDate modifiedDate;
+    protected LocalDateTime modifiedDate;
 
     @Column(name = "provider")
     private String provider;
@@ -76,4 +79,10 @@ public class PersistableUser implements Serializable {
 
     @Column(name = "validated")
     private boolean validated = false;
+
+    @PrePersist
+    private void prePersist() {
+        this.salaryHistory.setUser(this);
+    }
+
 }

@@ -2,6 +2,7 @@ package com.ngymich.shalary.infrastructure.persistence.salary;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import lombok.*;
 
@@ -34,7 +35,14 @@ public class PersistableSalaryHistory {
     @Column(name = "total_years_of_experience")
     private float totalYearsOfExperience = 0F;
 
+    @JsonManagedReference
     @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "salary_history_id", referencedColumnName = "id")
     private List<PersistableSalaryInfo> salaryInfos = new ArrayList<>();
+
+    @PrePersist
+    private void prePersist() {
+        this.salaryInfos.forEach(salaryInfo -> salaryInfo.setSalaryHistory(this));
+    }
+
 }
