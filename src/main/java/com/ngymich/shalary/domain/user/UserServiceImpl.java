@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
         return PersistableUser.builder()
                 .id(userDto.getId())
                 .email(userDto.getEmail().trim())
-                .password(userDto.getPassword())
+                .password(passwordEncoder.encode(userDto.getPassword()))
                 .username(Optional.of(userDto.getUsername().trim()).orElse(null))
                 .mainSector(StringUtils.stripAccents(Optional.ofNullable((userDto.getMainSector())).map(String::trim).orElse(null)))
                 .location(StringUtils.stripAccents(Optional.ofNullable((userDto.getLocation())).map(String::trim).orElse(null)))
