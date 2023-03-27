@@ -60,7 +60,9 @@ public class PersistableSalaryInfo {
 
     @PrePersist
     private void prePersist() {
-        this.company.setSalaryInfo(this);
+        if (company != null ) {
+            this.company.setSalaryInfo(this);
+        }
     }
 
 

@@ -40,9 +40,5 @@ public class PersistableSalaryHistory {
     @JoinColumn(name = "salary_history_id", referencedColumnName = "id")
     private List<PersistableSalaryInfo> salaryInfos = new ArrayList<>();
 
-    @PrePersist
-    private void prePersist() {
-        this.salaryInfos.forEach(salaryInfo -> salaryInfo.setSalaryHistory(this));
-    }
 
 }

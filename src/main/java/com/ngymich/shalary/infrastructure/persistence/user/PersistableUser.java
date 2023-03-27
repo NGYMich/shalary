@@ -82,7 +82,9 @@ public class PersistableUser implements Serializable {
 
     @PrePersist
     private void prePersist() {
-        this.salaryHistory.setUser(this);
+        if (salaryHistory != null) {
+            this.salaryHistory.setUser(this);
+        }
     }
 
 }
