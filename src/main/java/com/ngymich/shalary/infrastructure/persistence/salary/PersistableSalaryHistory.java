@@ -3,16 +3,14 @@ package com.ngymich.shalary.infrastructure.persistence.salary;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "salary_history")
 @Builder

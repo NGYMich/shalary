@@ -2,16 +2,14 @@ package com.ngymich.shalary.infrastructure.persistence.salary;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ngymich.shalary.infrastructure.persistence.company.PersistableCompany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "salary_info")
 @Builder
