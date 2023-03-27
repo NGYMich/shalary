@@ -37,8 +37,6 @@ public interface UserService {
 
     UserDTO getUserById(Long userId);
 
-    Optional<PersistableUser> getUserThroughPassword(String username, String password);
-
     void deleteUserById(Long userId);
 
     void deleteAll();
@@ -46,4 +44,9 @@ public interface UserService {
     void deleteUsersWithRange(int fromUserId, int toUserId);
 
     void deleteUsers(List<Integer> userIdsToDelete);
+
+    List<UserDTO> getUsersFromPageAndPageSize(int page, int pageSize) throws Exception;
+
+    List<UserDTO> getUsersFromCountry(String countryName);
+
 }

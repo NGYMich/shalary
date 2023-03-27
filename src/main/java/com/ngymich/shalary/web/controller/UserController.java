@@ -5,7 +5,6 @@ import com.ngymich.shalary.application.user.UserDTO;
 import com.ngymich.shalary.application.util.GeneralUtils;
 import com.ngymich.shalary.config.security.user.CurrentUser;
 import com.ngymich.shalary.domain.country.Country;
-import com.ngymich.shalary.application.user.RequestUserDTO;
 import com.ngymich.shalary.domain.user.UserService;
 import com.ngymich.shalary.domain.user.UserServiceImpl;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
@@ -34,6 +33,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // ------------------------------------------- GET USERS
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
         log.info("Retrieving all users..");
@@ -48,12 +48,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/mostPopularCountries")
-    public ResponseEntity<?> getMostPopularCountriesFromUsers() {
-        log.info("Retrieving most popular countries");
-        List<Country> users = this.userService.getMostPopularCountriesFromUsers();
-        return ResponseEntity.ok(users);
-    }
 
     @GetMapping("/users/{user_id}")
     public ResponseEntity<?> getUserById(@PathVariable("user_id") Long userId) {
@@ -61,16 +55,50 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getUserById(userId));
     }
 
-//    @PostMapping("/retrieveUserWithPassword")
-//    public ResponseEntity<?> getUserByPassword(@RequestBody RequestUserDTO requestUserDTO) {
-//        log.info("Retrieving user {} with password. UserId : ", requestUserDTO.getId());
-//        return ResponseEntity.ok(this.userService.verifyByPassword(requestUserDTO.getId(), requestUserDTO.getPassword()));
-//    }
 
-    @PostMapping("/retrieveUserWithPassword")
-    public ResponseEntity<?> getUserByPassword(@RequestBody RequestUserDTO requestUserDTO) {
-        log.info("Retrieving user {} with password.", requestUserDTO.getUsername());
-        return ResponseEntity.ok(this.userService.getUserThroughPassword(requestUserDTO.getUsername(), requestUserDTO.getPassword()));
+    @GetMapping(path = "/getUsersFromPageAndPageSize/{page}/{pageSize}")
+    public ResponseEntity<?> getUsersFromTo(@PathVariable int page, @PathVariable int pageSize) {
+        List<UserDTO> users;
+        try {
+            log.info("Retrieving users from id {} to {} ({} users at page {}) ..", page * pageSize + 1, page * (pageSize + 1), pageSize, page);
+            users = this.userService.getUsersFromPageAndPageSize(page, pageSize);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping(path = "/getUsersFromCountry/{countryName}")
+    public ResponseEntity<?> getUsersFromTo(@PathVariable String countryName) {
+        List<UserDTO> users = null;
+        try {
+            log.info("Retrieving users from {}", countryName);
+            users = this.userService.getUsersFromCountry(countryName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok(users);
+    }
+
+
+    // ------------------------------------------- ADD USERS
+
+    @PostMapping("/users")
+    public List<PersistableUser> addUsers(@RequestBody List<UserDTO> userDTOS) {
+        String usernames = userDTOS.stream().map(UserDTO::getUsername).collect(Collectors.joining(","));
+        log.info("Adding users " + Arrays.toString(usernames.split(", ")));
+        List<PersistableUser> addedUsers = new ArrayList<>();
+        AtomicInteger count = new AtomicInteger(1);
+        userDTOS.forEach(user -> {
+            try {
+                count.getAndIncrement();
+                PersistableUser addedUser = this.userService.addUser(user, count, userDTOS.size());
+                addedUsers.add(addedUser);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return addedUsers;
     }
 
     @PostMapping("/user")
@@ -93,24 +121,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/users")
-    public List<PersistableUser> addUsers(@RequestBody List<UserDTO> userDTOS) {
-        String usernames = userDTOS.stream().map(UserDTO::getUsername).collect(Collectors.joining(","));
-        log.info("Adding users " + Arrays.toString(usernames.split(", ")));
-        List<PersistableUser> addedUsers = new ArrayList<>();
-        AtomicInteger count = new AtomicInteger(1);
-        userDTOS.forEach(user -> {
-            try {
-                count.getAndIncrement();
-                PersistableUser addedUser = this.userService.addUser(user, count, userDTOS.size());
-                addedUsers.add(addedUser);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        return addedUsers;
-    }
 
+    // ------------------------------------------- DELETE  USERS
     @Transactional
     @DeleteMapping(path = "/user/{userId}")
     public ResponseEntity<Long> deleteUser(@PathVariable Long userId) {
@@ -132,9 +144,18 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // ------------------------------------------- OTHERS
     @GetMapping("/user/me")
     public ResponseEntity<?> getCurrentUser(@CurrentUser LocalUser user) {
         return ResponseEntity.ok(GeneralUtils.buildUserInfo(user));
+    }
+
+
+    @GetMapping("/mostPopularCountries")
+    public ResponseEntity<?> getMostPopularCountriesFromUsers() {
+        log.info("Retrieving most popular countries");
+        List<Country> users = this.userService.getMostPopularCountriesFromUsers();
+        return ResponseEntity.ok(users);
     }
 
 //    @GetMapping("/all")

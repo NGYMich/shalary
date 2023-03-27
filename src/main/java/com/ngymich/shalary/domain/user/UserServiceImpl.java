@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -28,8 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -50,38 +50,53 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // move this to location controller
-    @Cacheable("countries")
-    public List<Country> getMostPopularCountriesFromUsers() {
 
-        List<Country> countriesWithFlags = locationService.getCountries();
-
-        return this.getUsersWithSalaryHistory()
+    public List<UserDTO> getUsers() {
+        long start = System.nanoTime();
+        List<PersistableUser> persistableUsers = this.userRepository.findAll();
+        List<UserDTO> sortedPersistableUsers = persistableUsers
                 .stream()
-                .collect(Collectors.groupingBy(UserDTO::getLocation, Collectors.counting()))
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(5)
-                .collect(Collectors.toList()).stream().map(Map.Entry::getKey).collect(Collectors.toList())
-                .stream()
-                .map(countryName -> {
-                    List<Country> collect = countriesWithFlags
-                            .stream()
-                            .filter(countryWithFlag -> countryWithFlag.getName().equals(countryName))
-                            .collect(Collectors.toList());
+                .sorted(Comparator.comparing(PersistableUser::getId).reversed())
+                .map(this::toUserDto)
+                .collect(Collectors.toList());
 
-                    String flag = null;
-                    if (!collect.isEmpty()) {
-                        flag = collect.get(0).getFlag();
-                    }
+        long end = System.nanoTime();
+        long elapsedTime = end - start;
+        log.info("Retrieved {} users in {} seconds", sortedPersistableUsers.size(), elapsedTime / 1_000_000_000.0);
 
-                    return Country
-                            .builder()
-                            .name(countryName)
-                            .flag(flag)
-                            .build();
-                })
+        return sortedPersistableUsers;
+    }
+
+    public List<UserDTO> getUsersWithSalaryHistory() {
+        return this.getUsers().stream()
+                .filter(userDTO -> userDTO.getSalaryHistory() != null)
+                .collect(Collectors.toList());
+    }
+
+    public UserDTO getUserById(Long userId) {
+        try {
+            return toUserDto(this.userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Could not find user " + userId)));
+        } catch (Exception e) {
+            throw new NotFoundException(e.getMessage());
+        }
+
+    }
+
+
+    public List<UserDTO> getUsersFromPageAndPageSize(int page, int pageSize) throws Exception {
+        try {
+            Pageable topTwenty = PageRequest.of(page, pageSize);
+            return this.userRepository.findAll(topTwenty).stream().map(this::toUserDto).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public List<UserDTO> getUsersFromCountry(String countryName) {
+        return this.userRepository
+                .findAllByLocation(countryName)
+                .stream()
+                .map(this::toUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -225,33 +240,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    private Double calculateTotalSalary(PersistableSalaryInfo salaryInfo) {
-//        double totalSalary = 0D;
-//        if (salaryInfo.getBaseSalary() != null) totalSalary += salaryInfo.getBaseSalary();
-//        if (salaryInfo.getBonusSalary() != null) totalSalary += salaryInfo.getBonusSalary();
-//        if (salaryInfo.getStockSalary() != null) totalSalary += salaryInfo.getStockSalary();
-//        return totalSalary;
-//    }
 
     private void sortSalaryHistoryByYearsOfExperience(UserDTO userDto) {
         userDto.getSalaryHistory().getSalaryInfos().sort(Comparator.comparing(PersistableSalaryInfo::getYearsOfExperience));
     }
 
-    public List<UserDTO> getUsers() {
-        long start = System.nanoTime();
-        List<PersistableUser> persistableUsers = this.userRepository.findAll();
-        List<UserDTO> sortedPersistableUsers = persistableUsers
-                .stream()
-                .sorted(Comparator.comparing(PersistableUser::getModifiedDate).reversed())
-                .map(this::toUserDto)
-                .collect(Collectors.toList());
-
-        long end = System.nanoTime();
-        long elapsedTime = end - start;
-        log.info("Retrieved {} users in {} seconds", sortedPersistableUsers.size(), elapsedTime / 1_000_000_000.0);
-
-        return sortedPersistableUsers;
-    }
 
     public UserDTO toUserDto(PersistableUser persistableUser) {
         List<Country> filteredCountries = this.locationService.getCountries()
@@ -283,34 +276,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    @Override
-    public List<UserDTO> getUsersWithSalaryHistory() {
-        return this.getUsers().stream()
-                .filter(userDTO -> userDTO.getSalaryHistory() != null)
-                .collect(Collectors.toList());
-    }
-
-    public UserDTO getUserById(Long userId) {
-        try {
-            return toUserDto(this.userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Could not find user " + userId)));
-        } catch (Exception e) {
-            throw new NotFoundException(e.getMessage());
-        }
-
-    }
-
-    public Optional<PersistableUser> getUserThroughPassword(String username, String password) {
-        Optional<PersistableUser> user = this.userRepository.findAll()
-                .stream()
-                .filter(persistableUser -> persistableUser.getUsername().equals(username) && persistableUser.getPassword().equals(password))
-                .findFirst();
-
-        if (user.isPresent() && user.get().getPassword().equals(password)) {
-            return user;
-        }
-        return Optional.empty();
-    }
-
     public void deleteUserById(Long userId) {
         PersistableUser user = this.userRepository.getById(userId);
         this.userRepository.deleteById(userId);
@@ -333,19 +298,44 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+
     public void deleteAll() {
         this.userRepository.deleteAll();
     }
 
-    public static boolean isValidEmailAddress(String email) {
-        boolean result = true;
-        try {
-            InternetAddress emailAddr = new InternetAddress(email);
-            emailAddr.validate();
-        } catch (AddressException ex) {
-            result = false;
-        }
-        return result;
+    // move this to location controller
+    @Cacheable("countries")
+    public List<Country> getMostPopularCountriesFromUsers() {
+
+        List<Country> countriesWithFlags = locationService.getCountries();
+
+        return this.getUsersWithSalaryHistory()
+                .stream()
+                .collect(Collectors.groupingBy(UserDTO::getLocation, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(5)
+                .collect(Collectors.toList()).stream().map(Map.Entry::getKey).collect(Collectors.toList())
+                .stream()
+                .map(countryName -> {
+                    List<Country> collect = countriesWithFlags
+                            .stream()
+                            .filter(countryWithFlag -> countryWithFlag.getName().equals(countryName))
+                            .collect(Collectors.toList());
+
+                    String flag = null;
+                    if (!collect.isEmpty()) {
+                        flag = collect.get(0).getFlag();
+                    }
+
+                    return Country
+                            .builder()
+                            .name(countryName)
+                            .flag(flag)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
