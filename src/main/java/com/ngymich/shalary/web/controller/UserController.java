@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -76,7 +77,7 @@ public class UserController {
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDto) {
         try {
             log.info("Adding user " + userDto.getUsername());
-            return ResponseEntity.ok(this.userService.addUser(userDto));
+            return ResponseEntity.ok(this.userService.addUser(userDto, new AtomicInteger(1), 1));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -97,9 +98,11 @@ public class UserController {
         String usernames = userDTOS.stream().map(UserDTO::getUsername).collect(Collectors.joining(","));
         log.info("Adding users " + Arrays.toString(usernames.split(", ")));
         List<PersistableUser> addedUsers = new ArrayList<>();
+        AtomicInteger count = new AtomicInteger(1);
         userDTOS.forEach(user -> {
             try {
-                PersistableUser addedUser = this.userService.addUser(user);
+                count.getAndIncrement();
+                PersistableUser addedUser = this.userService.addUser(user, count, userDTOS.size());
                 addedUsers.add(addedUser);
             } catch (Exception e) {
                 throw new RuntimeException(e);

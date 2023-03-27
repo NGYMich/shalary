@@ -20,19 +20,19 @@ class UserServiceTest {
     void getMostPopularCountries() throws Exception {
 
         for (int i=0; i<1; i++)
-            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Algeria").build());
+            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Algeria").build(), count, userDTOS.size());
         for (int i=0; i<2; i++)
-            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Mongolia").build());
+            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Mongolia").build(), count, userDTOS.size());
         for (int i=0; i<3; i++)
-            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("America").build());
+            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("America").build(), count, userDTOS.size());
         for (int i=0; i<4; i++)
-            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("France").build());
+            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("France").build(), count, userDTOS.size());
         for (int i=0; i<5; i++) {
-            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Portugal").build());
-            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Japan").build());
+            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Portugal").build(), count, userDTOS.size());
+            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Japan").build(), count, userDTOS.size());
         }
         for (int i=0; i<10; i++)
-            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Nigeria").build());
+            this.userService.addUser(UserDTO.builder().username("").password("").email("").location("Nigeria").build(), count, userDTOS.size());
 
         List<Country> mostPopularCountries = userService.getMostPopularCountriesFromUsers();
 

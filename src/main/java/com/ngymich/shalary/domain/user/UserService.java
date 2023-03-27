@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public interface UserService {
     PersistableUser registerNewUser(SignUpRequest signUpRequest) throws UserAlreadyExistAuthenticationException;
@@ -30,7 +31,7 @@ public interface UserService {
 
     UserDTO toUserDto(PersistableUser persistableUser);
 
-    PersistableUser addUser(UserDTO userDto);
+    PersistableUser addUser(UserDTO userDto, AtomicInteger count, int size);
 
     PersistableUser updateUser(UserDTO userDto);
 

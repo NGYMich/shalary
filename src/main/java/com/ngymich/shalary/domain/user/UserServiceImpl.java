@@ -20,6 +20,7 @@ import com.ngymich.shalary.infrastructure.persistence.user.UserJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -34,7 +35,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     // move this to location controller
+    @Cacheable("countries")
     public List<Country> getMostPopularCountriesFromUsers() {
 
         List<Country> countriesWithFlags = locationService.getCountries();
@@ -60,7 +62,7 @@ public class UserServiceImpl implements UserService {
                 .entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(7)
+                .limit(5)
                 .collect(Collectors.toList()).stream().map(Map.Entry::getKey).collect(Collectors.toList())
                 .stream()
                 .map(countryName -> {
@@ -89,15 +91,15 @@ public class UserServiceImpl implements UserService {
         this.locationService = locationService;
     }
 
-    public PersistableUser addUser(UserDTO userDto) {
+    public PersistableUser addUser(UserDTO userDto, AtomicInteger count, int size) {
         PersistableUser user = null;
         try {
             user = buildUser(userDto);
             PersistableUser savedUser = this.userRepository.save(user);
-            log.info("User {} saved", user.getUsername());
+            log.info("User {} saved. [{} / {}]", user.getUsername(), count, size);
             return savedUser;
         } catch (Exception e) {
-            log.error("Error while adding user " + userDto.getUsername() + ". Error : [" + e.getMessage() + "]");
+            log.error("Error while adding user {}. Count [{} / {}]. Error : [{}]", userDto.getUsername(), count, size, e.getMessage());
         }
 
         return user;
