@@ -161,6 +161,7 @@ public class UserServiceImpl implements UserService {
                 .gender(userDto.getGender())
                 .comment(StringUtils.stripAccents(Optional.ofNullable((userDto.getComment())).map(String::trim).orElse(null)))
                 .salaryHistory(buildSalaryHistory(userDto))
+                .createdDate(userDto.getCreatedDate() != null ? userDto.getCreatedDate() : LocalDate.now())
                 .modifiedDate(LocalDate.now())
                 .provider(userDto.getProvider())
                 .thumbsDown(userDto.getThumbsDown())
