@@ -74,7 +74,10 @@ public class UserServiceImpl implements UserService {
 
     public List<UserDTO> getUsersWithSalaryHistory() {
         return this.getUsers().stream()
-                .filter(userDTO -> userDTO.getSalaryHistory() != null)
+                .filter(userDTO -> userDTO.getSalaryHistory() != null
+                        && userDTO.getSalaryHistory().getSalaryInfos() != null
+                        && userDTO.getSalaryHistory().getSalaryInfos().size() > 0
+                )
                 .collect(Collectors.toList());
     }
 
