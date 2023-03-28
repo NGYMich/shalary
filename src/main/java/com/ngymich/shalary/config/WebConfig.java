@@ -4,8 +4,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
@@ -32,7 +34,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("*")
                 .maxAge(3600L)
                 .allowedHeaders("*")
-                .exposedHeaders("Authorization");
+                .exposedHeaders("Authorization")
+
+        ;
     }
 
     @Bean

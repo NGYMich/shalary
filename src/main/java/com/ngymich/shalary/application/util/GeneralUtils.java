@@ -1,10 +1,5 @@
 package com.ngymich.shalary.application.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.ngymich.shalary.application.authentication.LocalUser;
 import com.ngymich.shalary.application.authentication.SocialProvider;
 import com.ngymich.shalary.application.authentication.UserInfo;

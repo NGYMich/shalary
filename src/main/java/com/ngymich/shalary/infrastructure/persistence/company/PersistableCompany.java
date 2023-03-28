@@ -17,11 +17,11 @@ public class PersistableCompany {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "company_id")
     private Long id;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "company", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
     private PersistableSalaryInfo salaryInfo;
 
     @Column(name = "name")

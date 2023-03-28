@@ -25,7 +25,7 @@ public class PersistableSalaryHistory {
     private Long id;
 
     @JsonBackReference
-    @OneToOne(mappedBy = "salaryHistory", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "salaryHistory", fetch = FetchType.LAZY)
     private PersistableUser user;
 
 
@@ -36,7 +36,7 @@ public class PersistableSalaryHistory {
     private float totalYearsOfExperience = 0F;
 
     @JsonManagedReference
-    @OneToMany(targetEntity = PersistableSalaryInfo.class, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "salary_history_id", referencedColumnName = "id")
     private List<PersistableSalaryInfo> salaryInfos = new ArrayList<>();
 

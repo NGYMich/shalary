@@ -11,10 +11,12 @@ import com.ngymich.shalary.config.security.user.OAuth2UserInfo;
 import com.ngymich.shalary.config.security.user.OAuth2UserInfoFactory;
 import com.ngymich.shalary.domain.country.Country;
 import com.ngymich.shalary.domain.location.LocationService;
+import com.ngymich.shalary.infrastructure.persistence.company.CompanyJpaRepository;
 import com.ngymich.shalary.infrastructure.persistence.company.PersistableCompany;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import com.ngymich.shalary.infrastructure.persistence.salary.SalaryHistoryJpaRepository;
+import com.ngymich.shalary.infrastructure.persistence.salary.SalaryInfosJpaRepository;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import com.ngymich.shalary.infrastructure.persistence.user.UserJpaRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -30,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +48,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final UserJpaRepository userRepository;
     private final SalaryHistoryJpaRepository salaryHistoryRepository;
+    private final SalaryInfosJpaRepository salaryInfosJpaRepository;
+    private final CompanyJpaRepository companyJpaRepository;
     private final LocationService locationService;
 
     @Autowired
@@ -101,9 +105,11 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserServiceImpl(UserJpaRepository userRepository, SalaryHistoryJpaRepository salaryHistoryRepository, LocationService locationService) {
+    public UserServiceImpl(UserJpaRepository userRepository, SalaryHistoryJpaRepository salaryHistoryRepository, SalaryInfosJpaRepository salaryInfosJpaRepository, CompanyJpaRepository companyJpaRepository, LocationService locationService) {
         this.userRepository = userRepository;
         this.salaryHistoryRepository = salaryHistoryRepository;
+        this.salaryInfosJpaRepository = salaryInfosJpaRepository;
+        this.companyJpaRepository = companyJpaRepository;
         this.locationService = locationService;
     }
 
@@ -121,27 +127,38 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Transactional
+    @Modifying(flushAutomatically = true)
     public PersistableUser updateUser(UserDTO userDto) {
         // Retrieving user
-        PersistableUser userFromRepository = this.userRepository.findById(userDto.getId()).orElseThrow(() -> new NotFoundException("user" + userDto.getUsername() + " not found"));
+        PersistableUser userFromRepository = this.userRepository.findById(userDto.getId()).orElseThrow(() -> new NotFoundException("User " + userDto.getUsername() + " not found"));
 
-        PersistableSalaryHistory salaryHistory;
+        PersistableSalaryHistory salaryHistoryFromRepository;
+
+        // WORKS !!!!!!!!!!!!!!!! Deletes all salary info on update.
+        salaryInfosJpaRepository.deleteAllInBatch(userFromRepository.getSalaryHistory().getSalaryInfos());
+        companyJpaRepository.deleteAllInBatch(userFromRepository
+                .getSalaryHistory()
+                .getSalaryInfos()
+                .stream()
+                .map(PersistableSalaryInfo::getCompany)
+                .collect(Collectors.toList()));
         // Retrieving salary history
-        salaryHistory = userFromRepository.getSalaryHistory() != null ? salaryHistoryRepository.getById(userFromRepository.getSalaryHistory().getId()) : new PersistableSalaryHistory();
+        salaryHistoryFromRepository = userFromRepository.getSalaryHistory() != null ? userFromRepository.getSalaryHistory() : new PersistableSalaryHistory();
 
         // Setting salary infos in salary history with new user salary infos
-        setSalaryHistoryInformations(buildSalaryHistory(userDto), salaryHistory);
+        setSalaryHistoryInformations(buildSalaryHistory(userDto), salaryHistoryFromRepository);
 
         // Setting salary history for each salary info
-        setSalaryHistoryForEachSalaryInfo(salaryHistory);
+        setSalaryHistoryForEachSalaryInfo(salaryHistoryFromRepository);
 
         // Setting salary history for the user
-        setUserInformations(userDto, userFromRepository, salaryHistory);
+        setUserInformations(userDto, userFromRepository, salaryHistoryFromRepository);
 
         // Saving the entity
         userRepository.save(userFromRepository);
 
-        log.info("User {} updated", userDto.getUsername());
+        log.info("User {} updated", userFromRepository.getUsername());
         return userFromRepository;
     }
 
@@ -167,10 +184,10 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private static void setSalaryHistoryInformations(PersistableSalaryHistory persistableSalaryHistory, PersistableSalaryHistory salaryHistory) {
-        salaryHistory.setSalaryInfos(persistableSalaryHistory.getSalaryInfos());
-        salaryHistory.setTotalYearsOfExperience(persistableSalaryHistory.getTotalYearsOfExperience());
-        salaryHistory.setSalaryCurrency(persistableSalaryHistory.getSalaryCurrency());
+    private static void setSalaryHistoryInformations(PersistableSalaryHistory salaryHistoryFromUserDto, PersistableSalaryHistory salaryHistoryFromRepository) {
+        salaryHistoryFromRepository.setSalaryInfos(salaryHistoryFromUserDto.getSalaryInfos());
+        salaryHistoryFromRepository.setTotalYearsOfExperience(salaryHistoryFromUserDto.getTotalYearsOfExperience());
+        salaryHistoryFromRepository.setSalaryCurrency(salaryHistoryFromUserDto.getSalaryCurrency());
     }
 
     private PersistableUser buildUser(UserDTO userDto) {
@@ -205,6 +222,8 @@ public class UserServiceImpl implements UserService {
                 buildSalaryInfos(salaryHistory);
                 sortSalaryHistoryByYearsOfExperience(userDto);
             }
+        } else {
+            salaryHistory = new PersistableSalaryHistory();
         }
         return salaryHistory;
     }
@@ -348,7 +367,7 @@ public class UserServiceImpl implements UserService {
         } else if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new UserAlreadyExistAuthenticationException("User with email id " + signUpRequest.getEmail() + " already exist");
         }
-        PersistableUser user = buildUser(signUpRequest);
+        PersistableUser user = buildNewUser(signUpRequest);
         LocalDateTime now = LocalDateTime.now();
         user.setCreatedDate(now);
         user.setModifiedDate(now);
@@ -357,13 +376,14 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private PersistableUser buildUser(final SignUpRequest formDTO) {
+    private PersistableUser buildNewUser(final SignUpRequest formDTO) {
         PersistableUser user = new PersistableUser();
         user.setUsername(formDTO.getUsername());
         user.setEmail(formDTO.getEmail());
         user.setPassword(passwordEncoder.encode(formDTO.getPassword()));
         user.setProvider(formDTO.getSocialProvider().getProviderType());
         user.setCreatedDate(LocalDateTime.now());
+        user.setSalaryHistory(PersistableSalaryHistory.builder().build());
         return user;
     }
 
@@ -383,6 +403,7 @@ public class UserServiceImpl implements UserService {
         }
         SignUpRequest userDetails = toUserRegistrationObject(registrationId, oAuth2UserInfo);
         PersistableUser user = findUserByEmail(oAuth2UserInfo.getEmail());
+
         if (user != null) {
             if (!user.getProvider().equals(registrationId) && !user.getProvider().equals(SocialProvider.LOCAL.getProviderType())) {
                 throw new OAuth2AuthenticationProcessingException(

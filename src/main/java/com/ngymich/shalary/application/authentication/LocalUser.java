@@ -1,11 +1,11 @@
 package com.ngymich.shalary.application.authentication;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 import com.ngymich.shalary.application.util.GeneralUtils;
 import com.ngymich.shalary.infrastructure.persistence.user.PersistableUser;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -38,8 +38,19 @@ public class LocalUser extends User implements OAuth2User, OidcUser {
     }
 
     public static LocalUser create(PersistableUser user, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
-        LocalUser localUser = null;
-        localUser.setAttributes(attributes);
+
+
+        LocalUser localUser = new LocalUser(user.getEmail(),
+                user.getPassword(),
+                true,
+                true,
+                true,
+                true,
+                List.of(new SimpleGrantedAuthority("USER")),
+                user,
+                idToken,
+                userInfo);
+//        localUser.setAttributes(attributes);
         return localUser;
     }
 

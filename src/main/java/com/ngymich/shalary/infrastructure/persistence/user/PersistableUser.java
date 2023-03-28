@@ -1,13 +1,11 @@
 package com.ngymich.shalary.infrastructure.persistence.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.ngymich.shalary.application.user.UserDTO;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,8 +18,14 @@ import java.time.LocalDateTime;
 public class PersistableUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_id")
     private Long id;
+
+
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private PersistableSalaryHistory salaryHistory;
 
     @Column
     @NonNull
@@ -55,11 +59,6 @@ public class PersistableUser implements Serializable {
 
     @Column(name = "comment", length = 5000)
     private String comment;
-
-    @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private PersistableSalaryHistory salaryHistory;
 
     @Column(name = "created_date", nullable = false, updatable = false)
     protected LocalDateTime createdDate;

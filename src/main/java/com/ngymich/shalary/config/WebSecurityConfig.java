@@ -54,7 +54,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.cors().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable().formLogin().disable().httpBasic().disable()
+        http.cors()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable().formLogin().disable().httpBasic().disable()
                 .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint()).and().authorizeRequests().anyRequest().permitAll().and().oauth2Login().authorizationEndpoint()
                 .authorizationRequestRepository(cookieAuthorizationRequestRepository()).and().redirectionEndpoint().and().userInfoEndpoint().oidcUserService(customOidcUserService)
                 .userService(customOAuth2UserService).and().tokenEndpoint().accessTokenResponseClient(authorizationCodeTokenResponseClient()).and()
