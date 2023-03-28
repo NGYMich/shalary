@@ -305,13 +305,14 @@ public class UserServiceImpl implements UserService {
     }
 
     // move this to location controller
-    @Cacheable("countries")
+    @Cacheable("mostPopularCountries")
     public List<Country> getMostPopularCountriesFromUsers() {
 
         List<Country> countriesWithFlags = locationService.getCountries();
 
         return this.getUsersWithSalaryHistory()
                 .stream()
+                .filter(userDTO -> userDTO.getLocation() != null)
                 .collect(Collectors.groupingBy(UserDTO::getLocation, Collectors.counting()))
                 .entrySet()
                 .stream()
