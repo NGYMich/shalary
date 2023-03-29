@@ -1,5 +1,6 @@
 package com.ngymich.shalary.application.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryHistory;
 import lombok.Builder;
@@ -9,13 +10,16 @@ import lombok.NonNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Builder
 public class UserDTO {
 
     private Long id;
-    @NonNull private String email;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) private String password;
+    @NonNull
+    private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
     private String username;
 
     private String mainSector;
