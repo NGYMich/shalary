@@ -1,11 +1,13 @@
 package com.ngymich.shalary.infrastructure.persistence.company;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ngymich.shalary.infrastructure.persistence.salary.PersistableSalaryInfo;
 import lombok.*;
 
 import javax.persistence.*;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @Entity

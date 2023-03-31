@@ -1,6 +1,7 @@
 package com.ngymich.shalary.infrastructure.persistence.salary;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ngymich.shalary.infrastructure.persistence.company.PersistableCompany;
 import lombok.*;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @Entity
