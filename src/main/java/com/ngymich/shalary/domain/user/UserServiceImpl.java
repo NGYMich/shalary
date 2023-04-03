@@ -104,6 +104,10 @@ public class UserServiceImpl implements UserService {
         return this.userRepository
                 .findAllByLocation(countryName)
                 .stream()
+                .filter(persistableUser -> persistableUser.getSalaryHistory() != null
+                        && persistableUser.getSalaryHistory().getSalaryInfos() != null
+                        && persistableUser.getSalaryHistory().getSalaryInfos().size() > 0
+                )
                 .map(this::toUserDto)
                 .collect(Collectors.toList());
     }
@@ -349,15 +353,9 @@ public class UserServiceImpl implements UserService {
                             .collect(Collectors.toList());
 
                     String flag = null;
-                    if (!collect.isEmpty()) {
-                        flag = collect.get(0).getFlag();
-                    }
+                    if (!collect.isEmpty()) flag = collect.get(0).getFlag();
 
-                    return Country
-                            .builder()
-                            .name(countryName)
-                            .flag(flag)
-                            .build();
+                    return Country.builder().name(countryName).flag(flag).build();
                 })
                 .collect(Collectors.toList());
     }

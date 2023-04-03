@@ -29,6 +29,7 @@ public class LocationController {
         List<Country> countries = new ArrayList<>();
         try {
             countries = this.locationService.getCountriesWithFlags();
+            log.info("Retrieved {} countries", countries.size());
         } catch (Exception e){
             log.error("Could not retrieve countries : " + e);
         }

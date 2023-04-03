@@ -56,7 +56,7 @@ public class UserController {
     }
 
 
-    @GetMapping(path = "/getUsersFromPageAndPageSize/{page}/{pageSize}")
+    @GetMapping(path = "/usersFromPageAndPageSize/{page}/{pageSize}")
     public ResponseEntity<?> getUsersFromTo(@PathVariable int page, @PathVariable int pageSize) {
         List<UserDTO> users;
         try {
@@ -68,7 +68,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping(path = "/getUsersFromCountry/{countryName}")
+    @GetMapping(path = "/usersFromCountry/{countryName}")
     public ResponseEntity<?> getUsersFromTo(@PathVariable String countryName) {
         List<UserDTO> users = null;
         try {
